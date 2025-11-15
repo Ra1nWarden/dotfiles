@@ -67,14 +67,33 @@ ZSH_THEME="robbyrussell"
 # see 'man strftime' for details.
 # HIST_STAMPS="mm/dd/yyyy"
 
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
+ZSH_CUSTOM="$HOME/.oh-my-zsh/custom"
 
 # Which plugins would you like to load?
 # Standard plugins can be found in $ZSH/plugins/
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
+
+# fzf setup 
+export FZF_HOME="$HOME/.local/share/fzf"
+
+# If fzf is not installed yet, install it
+if [ ! -d "$FZF_HOME" ]; then
+  echo "Installing fzf..."
+  git clone --depth 1 https://github.com/junegunn/fzf.git "$FZF_HOME"
+  "$FZF_HOME/install" --key-bindings --completion --no-bash --no-fish --no-update-rc
+fi
+
+# Add fzf binary to PATH
+if [ -d "$FZF_HOME/bin" ]; then
+  export PATH="$FZF_HOME/bin:$PATH"
+fi
+
+# Load key-bindings and completion for zsh
+[ -f "$FZF_HOME/shell/key-bindings.zsh" ] && source "$FZF_HOME/shell/key-bindings.zsh"
+[ -f "$FZF_HOME/shell/completion.zsh" ] && source "$FZF_HOME/shell/completion.zsh"
+# fzf setup end
 
 # Custom plugin: zsh-autosuggestions
 if [ ! -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ]; then
@@ -87,6 +106,7 @@ fi
 plugins=(
 	git
 	zsh-autosuggestions
+	fzf
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -123,9 +143,6 @@ source ~/.bash_profile
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-# Set up fzf key bindings and fuzzy completion
-source <(fzf --zsh)
 
 # dotfiles
 alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
