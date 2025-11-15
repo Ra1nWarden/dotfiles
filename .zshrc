@@ -2,7 +2,14 @@
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH="/Users/ra1nwarden/.oh-my-zsh"
+export ZSH="$HOME/.oh-my-zsh"
+
+# Install oh-my-zsh if it's not already installed
+if [ ! -d "$ZSH" ]; then
+	echo "Installing oh-my-zsh..."
+	RUNZSH=no KEEP_ZSHRC=yes \
+		sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+fi
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -68,6 +75,15 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
+
+# Custom plugin: zsh-autosuggestions
+if [ ! -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ]; then
+	echo "Installing zsh-autosuggestions..." >&2
+	git clone https://github.com/zsh-users/zsh-autosuggestions \
+		"$ZSH_CUSTOM/plugins/zsh-autosuggestions" >&2
+fi
+
+# Plugins
 plugins=(
 	git
 	zsh-autosuggestions
