@@ -1,0 +1,9 @@
+- defaults:
+    link:
+      create: true
+      relink: true
+
+- link:
+    # Examples – adjust based on what you actually track in the repo
+    ~/.zshrc: .zshrc
+    ~/.vimrc: .vimrc
