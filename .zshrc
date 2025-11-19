@@ -109,10 +109,18 @@ if [ ! -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ]; then
 		"$ZSH_CUSTOM/plugins/zsh-autosuggestions" >&2
 fi
 
+# Custom plugin: zsh-syntax-highlighting
+if [ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]; then
+	echo "Installing zsh-syntax-highlighting..." >&2
+	git clone https://github.com/zsh-users/zsh-syntax-highlighting \
+		"$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" >&2
+fi
+
 # Plugins
 plugins=(
 	git
 	zsh-autosuggestions
+	zsh-syntax-highlighting
 	fzf
 )
 
