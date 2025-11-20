@@ -1,0 +1,42 @@
+name: Test Dotfiles Installation
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Run install script
+      run: ./install
+
+    - name: Verify symlinks
+      run: |
+        echo "Checking .zshrc symlink..."
+        test -L ~/.zshrc && echo "✓ .zshrc is linked" || exit 1
+
+        echo "Checking .vimrc symlink..."
+        test -L ~/.vimrc && echo "✓ .vimrc is linked" || exit 1
+
+        echo "Checking .vim directory symlink..."
+        test -L ~/.vim && echo "✓ .vim is linked" || exit 1
+
+    - name: Verify vim plugins installed
+      run: |
+        echo "Checking ctrlp.vim plugin..."
+        test -d ~/.vim/pack/vendor/start/ctrlp.vim && echo "✓ ctrlp.vim installed" || exit 1
+
+        echo "Checking nerdtree plugin..."
+        test -d ~/.vim/pack/vendor/start/nerdtree && echo "✓ nerdtree installed" || exit 1
+
+        echo "All vim plugins installed successfully!"
