@@ -1,0 +1,6 @@
+# Track only config files, ignore everything else
+*
+!.gitignore
+!settings.json
+!CLAUDE.md
+!keybindings.json
