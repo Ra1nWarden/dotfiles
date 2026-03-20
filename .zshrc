@@ -158,3 +158,11 @@ source ~/.bash_profile
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# Source machine-local overrides (not tracked by git)
+if [ ! -f ~/.zshrc.local ]; then
+  touch ~/.zshrc.local
+  echo "# Machine-specific configuration" > ~/.zshrc.local
+  echo "# This file is not tracked by git. Edit freely for local overrides." >> ~/.zshrc.local
+fi
+source ~/.zshrc.local
