@@ -2,11 +2,10 @@
 
 ## Planning & Communication
 
-- For non-trivial tasks, always use plan mode first. Do NOT make any code changes during planning.
+- For non-trivial tasks, always use the built-in EnterPlanMode tool first. Do NOT make any code changes during planning.
   1. Enter plan mode to explore the codebase (read, search, research only — no edits).
-  2. Write the plan to a dedicated `plan.md` file in the project root. Include: goals, alternative approaches with trade-offs, recommended approach with rationale, files/modules affected, and implementation steps.
-  3. Exit plan mode and let me review `plan.md`. I may edit the file directly with feedback.
-  4. Only begin implementation after I approve the plan.
+  2. Design the plan and present it via ExitPlanMode for review and approval.
+  3. Only begin implementation after I approve the plan.
 - For trivial tasks (typos, single-line fixes, obvious changes), skip plan mode and proceed directly.
 - Use task/todo lists whenever possible to track progress and show what's been done vs. what remains.
 - For each change or step, provide a high-level summary that includes relevant technical details (e.g., which files/modules are affected, what patterns are used, key implementation decisions).
