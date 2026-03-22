@@ -9,6 +9,7 @@
     ~/.vim: vim
     ~/.claude/CLAUDE.md: claude/CLAUDE.md
     ~/.claude/settings.json: claude/settings.json
+    ~/.claude/.mcp.json: claude/.mcp.json
 
 - shell:
   - [git submodule update --init --recursive, Installing vim plugins]

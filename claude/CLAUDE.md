@@ -11,6 +11,11 @@
 - For each change or step, provide a high-level summary that includes relevant technical details (e.g., which files/modules are affected, what patterns are used, key implementation decisions).
 - Proactively present alternative approaches with trade-offs (performance, complexity, maintainability, etc.) and explain why you recommend a particular approach. Don't wait for me to ask.
 
+## Verification
+
+- After completing code changes, run a build/compile check (e.g., `npm run build`, `vite build`) to catch basic syntax and compilation errors before considering the task done.
+- After UI changes, use the Playwright MCP tools to verify the changes visually if feasible (e.g., navigate to the running dev server, click buttons, fill forms, take snapshots).
+
 ## Sub-Agent Usage
 
 - Use sub-agents to keep the main context clean and to parallelize independent work.
