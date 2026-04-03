@@ -121,11 +121,6 @@ shapes or type signatures where relevant.
 
 Notable architectural choices, conventions, or patterns used in this area.
 Note anything non-obvious that a developer new to this code would need to know.
-
-## Open Questions
-
-Anything that remains unclear, seems inconsistent, or would benefit from
-further investigation. This helps `/design` know where to dig deeper.
 ```
 
 ---
