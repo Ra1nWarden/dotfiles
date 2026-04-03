@@ -1,7 +1,7 @@
 ---
 description: Explore approaches, write a design doc, and get adversarial review
 argument-hint: <problem or feature to design>
-allowed-tools: Read Glob Grep Bash(ls *) Bash(mkdir *) Bash(cat *) Bash(head *) Bash(tail *) Bash(wc *) Bash(git log*) Bash(git diff*) Bash(git status*) Bash(git show*) Bash(git branch*) Bash(pwd) Bash(which *) Bash(echo *) Bash(tree *)
+allowed-tools: Read Glob Grep Bash(ls *) Bash(mkdir *) Bash(cat *) Bash(head *) Bash(tail *) Bash(wc *) Bash(git log*) Bash(git diff*) Bash(git status*) Bash(git show*) Bash(git branch*) Bash(git add*) Bash(git commit*) Bash(git push*) Bash(git pull*) Bash(pwd) Bash(which *) Bash(echo *) Bash(tree *) Bash(date *) Bash(basename *) Bash(cd *)
 ---
 
 # Design Document Workflow
@@ -15,6 +15,23 @@ document, then get it reviewed by a fresh-context adversarial reviewer.
 - **Explore before deciding**: Always investigate at least 2 genuinely different approaches before recommending one
 - **Write for a cold reader**: The design doc must stand on its own without verbal context
 - **Adversarial review matters**: The reviewer agent must challenge assumptions, not rubber-stamp
+
+---
+
+## Phase 0: Environment Setup
+
+Before any other work:
+
+1. **Check `$BLUEPRINTS_DIR`**: Run `echo "$BLUEPRINTS_DIR"`. If empty, STOP and
+   tell the user: *"BLUEPRINTS_DIR is not set. Run `./install` from your dotfiles
+   repo or add `export BLUEPRINTS_DIR=~/path/to/blueprints` to `~/.zshrc.local`,
+   then restart your shell."*
+2. **Derive project name**:
+   ```sh
+   PROJECT=$(basename "$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null \
+     | sed 's|/\.git$||; s|/\.bare$||')" 2>/dev/null || basename "$(pwd)")
+   ```
+3. **Prepare output directory**: `mkdir -p "$BLUEPRINTS_DIR/$PROJECT/spec/"`
 
 ---
 
@@ -54,11 +71,11 @@ Design request: $ARGUMENTS
 
 ## Phase 3: Write the Design Document
 
-**Goal**: Produce a structured design doc in `.claude/designs/`
+**Goal**: Produce a structured design doc in the blueprints repository
 
 **Actions**:
-1. Create the `.claude/designs/` directory in the project root if it does not exist
-2. Write the design document to `.claude/designs/<date>-<slug>.md` where `<date>` is today's date (YYYY-MM-DD) and `<slug>` is a short kebab-case topic name
+1. Generate the filename: `$(date +%s)-<slug>.md` where `<slug>` is a short kebab-case topic name
+2. Write the design document to `$BLUEPRINTS_DIR/$PROJECT/spec/<filename>`
 3. Use this structure:
 
 ```markdown
@@ -89,7 +106,14 @@ Pros, cons, risks, effort estimate.
 Which approach and why. What assumptions does this depend on?
 ```
 
-4. Tell the user the design doc has been written and briefly summarize it
+4. **Commit-on-write**: Run the blueprints commit protocol:
+   ```sh
+   cd "$BLUEPRINTS_DIR" && git add -A "$PROJECT/" && \
+     git commit -m "spec($PROJECT): <slug>" && \
+     git push || (git pull --rebase && git push)
+   ```
+   If push fails due to no remote, warn but continue.
+5. Tell the user the design doc has been written and briefly summarize it
 
 ---
 
@@ -133,7 +157,9 @@ Which approach and why. What assumptions does this depend on?
 ```
 
 2. Update the document **Status** from "Draft" to "Reviewed"
-3. Present to the user:
+3. **Commit-on-write**: Run the blueprints commit protocol again to save the
+   review feedback.
+4. Present to the user:
    - The file path of the design doc
    - Your recommendation (brief)
    - The reviewer's verdict and strongest concern

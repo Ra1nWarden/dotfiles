@@ -13,3 +13,39 @@ git -C "${DOTBOT_DIR}" submodule sync --quiet --recursive
 git submodule update --init --recursive "${DOTBOT_DIR}"
 
 "${BASEDIR}/${DOTBOT_DIR}/${DOTBOT_BIN}" -d "${BASEDIR}" -c "${CONFIG}" "${@}"
+
+# Blueprints setup
+# Source .zshrc.local to check if BLUEPRINTS_DIR is already set
+[ -f ~/.zshrc.local ] && source ~/.zshrc.local 2>/dev/null || true
+
+if [ -z "$BLUEPRINTS_DIR" ]; then
+  echo ""
+  echo "=== Claude Code Blueprints Setup ==="
+  echo "Blueprints store design specs, plans, and reviews in a git-tracked directory."
+  echo ""
+  printf "Enter blueprints directory path (e.g., ~/personal/blueprints), or press Enter to skip: "
+  read -r BLUEPRINTS_PATH
+
+  if [ -n "$BLUEPRINTS_PATH" ]; then
+    # Expand ~ to $HOME
+    BLUEPRINTS_PATH="${BLUEPRINTS_PATH/#\~/$HOME}"
+
+    # Append to .zshrc.local
+    echo "" >> ~/.zshrc.local
+    echo "export BLUEPRINTS_DIR=\"$BLUEPRINTS_PATH\"" >> ~/.zshrc.local
+
+    # Create directory and init git repo
+    mkdir -p "$BLUEPRINTS_PATH"
+    if [ ! -d "$BLUEPRINTS_PATH/.git" ]; then
+      git -C "$BLUEPRINTS_PATH" init
+      echo "Initialized blueprints repo at $BLUEPRINTS_PATH"
+    fi
+
+    export BLUEPRINTS_DIR="$BLUEPRINTS_PATH"
+    echo "BLUEPRINTS_DIR set to $BLUEPRINTS_PATH"
+    echo "Remember to add a git remote: cd $BLUEPRINTS_PATH && git remote add origin <url>"
+  else
+    echo "Skipped. You can set it later in ~/.zshrc.local:"
+    echo "  export BLUEPRINTS_DIR=~/path/to/blueprints"
+  fi
+fi

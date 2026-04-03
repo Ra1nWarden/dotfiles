@@ -164,5 +164,7 @@ if [ ! -f ~/.zshrc.local ]; then
   touch ~/.zshrc.local
   echo "# Machine-specific configuration" > ~/.zshrc.local
   echo "# This file is not tracked by git. Edit freely for local overrides." >> ~/.zshrc.local
+  echo "" >> ~/.zshrc.local
+  echo "# export BLUEPRINTS_DIR=~/path/to/blueprints  # used by Claude Code blueprints system" >> ~/.zshrc.local
 fi
 source ~/.zshrc.local

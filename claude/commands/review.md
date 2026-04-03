@@ -1,13 +1,28 @@
 ---
 description: Run specialized code reviews (architecture, readability, correctness) on a commit, PR, or set of changes
 argument-hint: <commit hash, PR number/URL, or branch name>
-allowed-tools: Read Glob Grep Bash(ls *) Bash(cat *) Bash(git log*) Bash(git diff*) Bash(git status*) Bash(git show*) Bash(git branch*) Bash(git rev-parse*) Bash(pwd) Bash(tree *) Bash(gh pr view*) Bash(gh pr diff*)
+allowed-tools: Read Glob Grep Bash(ls *) Bash(cat *) Bash(git log*) Bash(git diff*) Bash(git status*) Bash(git show*) Bash(git branch*) Bash(git rev-parse*) Bash(git add*) Bash(git commit*) Bash(git push*) Bash(git pull*) Bash(pwd) Bash(tree *) Bash(gh pr view*) Bash(gh pr diff*) Bash(date *) Bash(basename *) Bash(cd *) Bash(mkdir *)
 ---
 
 # Code Review Workflow
 
 You are reviewing a code change using three specialized review agents. Follow
 this workflow strictly.
+
+## Phase 0: Environment Setup
+
+Before any other work:
+
+1. **Check `$BLUEPRINTS_DIR`**: Run `echo "$BLUEPRINTS_DIR"`. If empty, reviews
+   will not be persisted to the blueprints repo. Warn the user but continue —
+   review output is still presented inline.
+2. **Derive project name** (if `$BLUEPRINTS_DIR` is set):
+   ```sh
+   PROJECT=$(basename "$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null \
+     | sed 's|/\.git$||; s|/\.bare$||')" 2>/dev/null || basename "$(pwd)")
+   ```
+
+---
 
 **Input**: The user provides one of:
 - A **commit hash** (e.g., `abc1234`)
@@ -80,3 +95,20 @@ The overall verdict is:
 - **FAIL** if any reviewer returned FAIL
 - **PASS WITH WARNINGS** if any reviewer returned PASS WITH WARNINGS
 - **PASS** only if all three reviewers returned PASS
+
+---
+
+## Phase 4: Persist to Blueprints (if available)
+
+If `$BLUEPRINTS_DIR` is set:
+
+1. Save the full review output to
+   `$BLUEPRINTS_DIR/$PROJECT/review/$(date +%s)-<slug>.md`
+   where `<slug>` is derived from the change description.
+2. **Commit-on-write**: Run the blueprints commit protocol:
+   ```sh
+   cd "$BLUEPRINTS_DIR" && git add -A "$PROJECT/" && \
+     git commit -m "review($PROJECT): <slug>" && \
+     git push || (git pull --rebase && git push)
+   ```
+3. Tell the user where the review was saved.

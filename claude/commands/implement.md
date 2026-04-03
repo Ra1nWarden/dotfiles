@@ -1,7 +1,7 @@
 ---
 description: Turn an approved design doc into a dependency graph of tasks and execute them with sub-agents
-argument-hint: <path to design .md file>
-allowed-tools: Read Glob Grep Bash(ls *) Bash(cat *) Bash(git log*) Bash(git diff*) Bash(git status*) Bash(git show*) Bash(git branch*) Bash(pwd) Bash(tree *)
+argument-hint: <path to design .md file, or slug name to look up in blueprints>
+allowed-tools: Read Glob Grep Bash(ls *) Bash(cat *) Bash(git log*) Bash(git diff*) Bash(git status*) Bash(git show*) Bash(git branch*) Bash(git add*) Bash(git commit*) Bash(git push*) Bash(git pull*) Bash(pwd) Bash(tree *) Bash(mv *) Bash(date *) Bash(basename *) Bash(cd *)
 ---
 
 # Implementation Workflow
@@ -9,13 +9,36 @@ allowed-tools: Read Glob Grep Bash(ls *) Bash(cat *) Bash(git log*) Bash(git dif
 You are turning an approved design document into working code. Follow this
 workflow strictly.
 
-**Input**: The user provides a path to a design `.md` file (produced by `/design`).
+**Input**: The user provides either:
+- A full path to a design `.md` file
+- A slug name (e.g., `auth-redesign`) to look up in the blueprints repository
+
+---
+
+## Phase 0: Environment Setup
+
+Before any other work:
+
+1. **Check `$BLUEPRINTS_DIR`**: Run `echo "$BLUEPRINTS_DIR"`. If empty, STOP and
+   tell the user: *"BLUEPRINTS_DIR is not set. Run `./install` from your dotfiles
+   repo or add `export BLUEPRINTS_DIR=~/path/to/blueprints` to `~/.zshrc.local`,
+   then restart your shell."*
+2. **Derive project name**:
+   ```sh
+   PROJECT=$(basename "$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null \
+     | sed 's|/\.git$||; s|/\.bare$||')" 2>/dev/null || basename "$(pwd)")
+   ```
 
 ---
 
 ## Phase 1: Parse the Design
 
-1. Read the design document at the provided path.
+1. **Resolve the input**:
+   - If the user provided a full file path, use it directly.
+   - If the user provided a slug, look it up:
+     `ls "$BLUEPRINTS_DIR/$PROJECT/spec/"*"$SLUG"*`
+     If multiple matches, show them and ask the user to pick one.
+2. Read the design document at the resolved path.
 2. Identify the **recommended approach** — only implement that approach, not alternatives.
 3. Extract the key components, modules, or changes that need to be built.
 
@@ -136,6 +159,25 @@ the original design document.
 
 4. If the verdict is **DEVIATIONS FOUND**, list each deviation clearly and ask
    the user how to proceed (fix, accept, or update the design doc).
+
+---
+
+## Phase 6: Archive Blueprint
+
+After successful implementation and conformance review:
+
+1. Move the consumed spec to the archive:
+   ```sh
+   mkdir -p "$BLUEPRINTS_DIR/$PROJECT/archive/"
+   mv "$BLUEPRINTS_DIR/$PROJECT/spec/<file>" "$BLUEPRINTS_DIR/$PROJECT/archive/"
+   ```
+2. **Commit-on-write**: Run the blueprints commit protocol:
+   ```sh
+   cd "$BLUEPRINTS_DIR" && git add -A "$PROJECT/" && \
+     git commit -m "archive($PROJECT): <slug>" && \
+     git push || (git pull --rebase && git push)
+   ```
+3. Inform the user the blueprint has been archived.
 
 ---
 
