@@ -43,10 +43,15 @@ Design request: $ARGUMENTS
 
 **Actions**:
 1. If the request is ambiguous, ask the user to clarify scope, constraints, and goals before proceeding
-2. Explore the codebase to understand relevant architecture, patterns, and constraints. Launch 2 explorer agents in parallel:
+2. **Check for existing research**: List files in
+   `$BLUEPRINTS_DIR/$PROJECT/research/` — if any research briefs exist, present
+   their filenames and one-line scopes to the user. Ask if any are relevant
+   context. If so, read them and use as a starting point for discovery (skip
+   re-exploring areas already covered by the research).
+3. Explore the codebase to understand relevant architecture, patterns, and constraints. Launch 2 explorer agents in parallel:
    - Agent 1: Find code, patterns, and architecture relevant to the problem
    - Agent 2: Find similar prior art, related features, or adjacent systems
-3. Summarize findings briefly to the user
+4. Summarize findings briefly to the user
 
 ---
 

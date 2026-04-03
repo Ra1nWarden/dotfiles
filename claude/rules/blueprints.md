@@ -26,6 +26,7 @@ basename "$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null \
 ## Directory Layout
 
 ```
+$BLUEPRINTS_DIR/<project>/research/   # codebase research briefs (from /research)
 $BLUEPRINTS_DIR/<project>/spec/       # design specs (from /design)
 $BLUEPRINTS_DIR/<project>/plan/       # implementation plans
 $BLUEPRINTS_DIR/<project>/review/     # code review output (from /review)

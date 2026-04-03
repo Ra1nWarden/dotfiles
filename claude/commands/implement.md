@@ -90,6 +90,10 @@ For each wave, execute all tasks in parallel using sub-agents:
      - `correctness-review` — edge cases, unhappy paths, logic errors, missing
        unit tests
    - Present all three reviews to the user, grouped by reviewer.
+   - **Persist reviews**: If `$BLUEPRINTS_DIR` is set, save the combined review
+     output for the wave to
+     `$BLUEPRINTS_DIR/$PROJECT/review/<epoch>-wave-<N>-<slug>.md`
+     and run commit-on-write.
 4. **Fix round (one round only)**: Collect all Critical and Warning issues
    from all three reviewers. For each task that received issues:
    - **Spawn the same task's `general-purpose` agent again** with:
@@ -157,7 +161,10 @@ the original design document.
 <one-paragraph summary of how faithfully the implementation matches the design>
 ```
 
-4. If the verdict is **DEVIATIONS FOUND**, list each deviation clearly and ask
+4. **Persist conformance report**: If `$BLUEPRINTS_DIR` is set, save the report
+   to `$BLUEPRINTS_DIR/$PROJECT/review/<epoch>-conformance-<slug>.md` and run
+   commit-on-write.
+5. If the verdict is **DEVIATIONS FOUND**, list each deviation clearly and ask
    the user how to proceed (fix, accept, or update the design doc).
 
 ---
