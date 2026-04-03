@@ -51,6 +51,19 @@ cd "$BLUEPRINTS_DIR" && \
   git push || (git pull --rebase && git push)
 ```
 
+After a successful push, build and present a clickable link to the file on the
+remote. Derive the base URL from the remote:
+
+```sh
+REMOTE_URL=$(cd "$BLUEPRINTS_DIR" && git remote get-url origin 2>/dev/null)
+```
+
+Convert to a browser URL and append the file path on the default branch:
+- `git@github.com:owner/repo.git` → `https://github.com/owner/repo/blob/main/<project>/<type>/<file>`
+- `https://github.com/owner/repo.git` → `https://github.com/owner/repo/blob/main/<project>/<type>/<file>`
+
+Present the link to the user so they can click to open it in a browser.
+
 - If `git push` fails because no remote is configured, warn the user but do
   not treat it as a blocking error. The commit is still saved locally.
 - If rebase fails, STOP and alert the user with conflict details. Do not
