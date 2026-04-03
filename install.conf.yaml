@@ -12,6 +12,7 @@
     ~/.claude/.mcp.json: claude/.mcp.json
     ~/.claude/commands: claude/commands
     ~/.claude/agents: claude/agents
+    ~/.claude/rules: claude/rules
 
 - shell:
   - [git submodule update --init --recursive, Installing vim plugins]
