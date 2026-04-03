@@ -58,13 +58,20 @@ For each wave, execute all tasks in parallel using sub-agents:
 2. **Wait for all agents in the wave to complete** before starting the next wave.
 3. After each wave completes:
    - Summarize what each agent produced (files changed, key decisions)
-   - **Spawn a `code-review` agent** to review all changes from the wave. Pass it
-     the list of files changed and the task descriptions.
-   - Present the review feedback to the user.
-4. **Fix round (one round only)**: For each task that received Critical or
-   Warning issues from the reviewer:
+   - **Spawn three review agents in parallel**, each receiving the list of
+     files changed and the task descriptions:
+     - `architect-review` — structural problems, component boundaries,
+       dependency hygiene
+     - `readability-review` — language best practices, style guide conformance,
+       naming, clarity
+     - `correctness-review` — edge cases, unhappy paths, logic errors, missing
+       unit tests
+   - Present all three reviews to the user, grouped by reviewer.
+4. **Fix round (one round only)**: Collect all Critical and Warning issues
+   from all three reviewers. For each task that received issues:
    - **Spawn the same task's `general-purpose` agent again** with:
-     - The specific review feedback (issues, file paths, line numbers)
+     - The combined review feedback from all three reviewers (issues, file
+       paths, line numbers)
      - Instruction to address only the flagged issues — no other changes
      - The original task description for context
    - Wait for all fix agents to complete.
@@ -88,7 +95,7 @@ After all waves are complete:
 After integration passes, perform a final review of **all** code changes against
 the original design document.
 
-1. **Spawn a `code-review` agent** with:
+1. **Spawn an `architect-review` agent** with:
    - The full design document content (the recommended approach section)
    - A complete list of every file created or modified across all waves
    - Instruction to review for **design conformance only** (not code quality —
