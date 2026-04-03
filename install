@@ -18,7 +18,7 @@ git submodule update --init --recursive "${DOTBOT_DIR}"
 # Source .zshrc.local to check if BLUEPRINTS_DIR is already set
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local 2>/dev/null || true
 
-if [ -z "$BLUEPRINTS_DIR" ]; then
+if [ -z "$BLUEPRINTS_DIR" ] && [ -t 0 ]; then
   echo ""
   echo "=== Claude Code Blueprints Setup ==="
   echo "Blueprints store design specs, plans, and reviews in a git-tracked directory."
