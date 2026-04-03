@@ -37,8 +37,8 @@ Create on first write: `mkdir -p "$BLUEPRINTS_DIR/<project>/<type>/"`
 
 ## Naming
 
-All files use `<epoch>-<slug>.md` where epoch is Unix seconds from `date +%s`.
-Example: `1711324800-auth-redesign.md`. No type-specific prefixes.
+All files use `<timestamp>-<slug>.md` where timestamp is `date +%Y%m%d%H%M`.
+Example: `202604031530-auth-redesign.md`. No type-specific prefixes.
 
 ## Commit-on-Write
 
@@ -78,7 +78,7 @@ When using `EnterPlanMode` / `ExitPlanMode` for non-trivial tasks:
    ```sh
    mkdir -p "$BLUEPRINTS_DIR/<project>/plan/"
    ```
-   Write the plan as `<epoch>-<slug>.md` using this structure:
+   Write the plan as `<timestamp>-<slug>.md` using this structure:
    ```markdown
    # Plan: <Title>
 

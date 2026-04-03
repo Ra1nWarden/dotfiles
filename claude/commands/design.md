@@ -79,7 +79,7 @@ Design request: $ARGUMENTS
 **Goal**: Produce a structured design doc in the blueprints repository
 
 **Actions**:
-1. Generate the filename: `$(date +%s)-<slug>.md` where `<slug>` is a short kebab-case topic name
+1. Generate the filename: `$(date +%Y%m%d%H%M)-<slug>.md` where `<slug>` is a short kebab-case topic name
 2. Write the design document to `$BLUEPRINTS_DIR/$PROJECT/spec/<filename>`
 3. Use this structure:
 

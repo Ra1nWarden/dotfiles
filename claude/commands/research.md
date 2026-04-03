@@ -80,14 +80,16 @@ Before synthesizing, spot-check the agents' claims:
 
 ## Phase 4: Synthesize Research Brief
 
-Write the research brief to `$BLUEPRINTS_DIR/$PROJECT/research/<epoch>-<slug>.md`
+Write the research brief to `$BLUEPRINTS_DIR/$PROJECT/research/<timestamp>-<slug>.md`
 using this structure:
 
 ```markdown
 # Research: <Topic>
 
 **Date**: <YYYY-MM-DD>
+
 **Project**: <project name>
+
 **Scope**: <1-line summary of what was investigated>
 
 ## Overview

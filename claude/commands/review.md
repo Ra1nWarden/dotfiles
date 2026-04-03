@@ -103,7 +103,7 @@ The overall verdict is:
 If `$BLUEPRINTS_DIR` is set:
 
 1. Save the full review output to
-   `$BLUEPRINTS_DIR/$PROJECT/review/$(date +%s)-<slug>.md`
+   `$BLUEPRINTS_DIR/$PROJECT/review/$(date +%Y%m%d%H%M)-<slug>.md`
    where `<slug>` is derived from the change description.
 2. **Commit-on-write**: Run the blueprints commit protocol:
    ```sh
