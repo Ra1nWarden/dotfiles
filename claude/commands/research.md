@@ -141,3 +141,18 @@ Note anything non-obvious that a developer new to this code would need to know.
    - The file path where it was saved
    - Remind: *"This research is available as context for `/design` — reference
      it by slug when you're ready to design a solution."*
+
+---
+
+## Follow-Up Questions
+
+When the user asks follow-up questions after the initial research:
+
+1. **Dispatch a new explorer agent** to investigate the follow-up topic, passing
+   the existing research brief as context so it can build on prior findings.
+2. **Update the existing research brief** — integrate the new findings into the
+   relevant sections (add components, expand flows, update API surface, etc.).
+   Do not create a separate file.
+3. **Commit-on-write**: Run the blueprints commit protocol after updating.
+4. **Present the updated sections** to the user — show what changed, not the
+   entire brief again.
