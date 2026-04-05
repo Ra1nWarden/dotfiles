@@ -169,25 +169,6 @@ the original design document.
 
 ---
 
-## Phase 6: Archive Blueprint
-
-After successful implementation and conformance review:
-
-1. Move the consumed spec to the archive:
-   ```sh
-   mkdir -p "$BLUEPRINTS_DIR/$PROJECT/archive/"
-   mv "$BLUEPRINTS_DIR/$PROJECT/spec/<file>" "$BLUEPRINTS_DIR/$PROJECT/archive/"
-   ```
-2. **Commit-on-write**: Run the blueprints commit protocol:
-   ```sh
-   cd "$BLUEPRINTS_DIR" && git add -A "$PROJECT/" && \
-     git commit -m "archive($PROJECT): <slug>" && \
-     git push || (git pull --rebase && git push)
-   ```
-3. Inform the user the blueprint has been archived.
-
----
-
 ## Guidelines
 
 - **Do not deviate from the design doc** without flagging it to the user first.

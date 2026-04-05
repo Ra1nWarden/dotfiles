@@ -96,17 +96,10 @@ When using `EnterPlanMode` / `ExitPlanMode` for non-trivial tasks:
    ```
 3. Run commit-on-write after saving the plan.
 4. Present the plan to the user via `ExitPlanMode` for approval.
-5. After implementation is complete, archive the plan:
-   ```sh
-   mv "$BLUEPRINTS_DIR/<project>/plan/<file>" \
-      "$BLUEPRINTS_DIR/<project>/archive/"
-   ```
-   Then run commit-on-write.
-
 ## Archive Protocol
 
-When a blueprint is consumed by a downstream command (e.g., `/implement`
-consumes a spec):
+Blueprints are **not** archived automatically. Only archive when the user
+explicitly asks to archive a blueprint:
 
 ```sh
 mkdir -p "$BLUEPRINTS_DIR/<project>/archive/"
