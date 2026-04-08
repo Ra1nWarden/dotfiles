@@ -1,6 +1,6 @@
 ---
 description: Fetch open PRs for a group of engineers and evenly distribute review assignments based on PR size, relevance, and existing reviews
-argument-hint: <github-id-1> <github-id-2> ... [--no-review <github-id>] [--project <keyword>]
+argument-hint: <github-id-1> <github-id-2> ... [--no-review <github-id>] [--project <keyword>] [--ignore-reviewed]
 ---
 
 # PR Review Assignment
@@ -14,6 +14,7 @@ Parse `$ARGUMENTS` to extract:
 - **GitHub IDs**: All positional args (space-separated GitHub usernames). These people are both PR authors AND potential reviewers.
 - **`--no-review <id>`**: Can appear multiple times. These people's PRs are included in the pool, but they will NOT be assigned any reviews (e.g., non-engineers, people OOO). Remove them from the reviewer list.
 - **`--project <keyword>`**: Optional. If provided, filter PRs to only those matching this keyword in title, labels, or file paths. If omitted, include all PRs.
+- **`--ignore-reviewed`**: Optional flag. When set, exclude carried-over PRs from the Slack message if the reviewer has already acted (commented or requested changes) and the author has NOT responded with new commits or replies since. These PRs are in the **author's court**, not the reviewer's.
 
 If no arguments are provided, ask the user for the list of GitHub usernames.
 
@@ -47,6 +48,25 @@ For each remaining PR, compute size as `additions + deletions` and classify:
 ### Step 3: Identify existing reviewers
 
 For each filtered PR, check if any team member (from the GitHub IDs list) has already left a review (COMMENTED, APPROVED, or CHANGES_REQUESTED). If so, mark that PR as "carried over" with the existing reviewer. Do NOT reassign it.
+
+### Step 3.5: Determine court (only when `--ignore-reviewed` is set)
+
+For each carried-over PR, determine whether the ball is in the **reviewer's court** or the **author's court** by fetching the timeline:
+
+```bash
+gh pr view <number> --json commits,reviews \
+  --jq '{latest_commit: [.commits[].committedDate] | sort | last, reviews: [.reviews[] | select(.author.login != "cursor" and .author.login != "figma-opengrep") | {author: .author.login, state: .state, submittedAt: .submittedAt}]}'
+```
+
+Run these in parallel for all carried-over PRs.
+
+**Court rules:**
+- Compare the **latest team reviewer action** (comment or changes_requested) against the **latest author action** (commit pushed or reply comment after the reviewer's action)
+- If the reviewer acted last and the author has NOT pushed commits or replied since → **author's court** (reviewer is waiting on the author)
+- If the author pushed commits or replied after the reviewer's last action → **reviewer's court** (reviewer needs to re-review)
+- PRs with no team reviews at all are always **reviewer's court** (they need initial review)
+
+Add a "Court" column to the carried-over table showing `Author` or `Reviewer`.
 
 ### Step 4: Assign remaining PRs
 
@@ -90,6 +110,8 @@ A copy-pasteable Slack message block formatted as:
 Use the reviewer's GitHub username for the @-mention (the user can adjust to Slack handles). Include full GitHub PR URLs (not shorthand). Group by reviewer.
 
 If there are PRs with zero reviews that were assigned in a previous round, add a reminder line with the full PR link.
+
+When `--ignore-reviewed` is set, **exclude** carried-over PRs that are in the **author's court** from the Slack message. Only include PRs where the reviewer needs to take action (reviewer's court + new assignments).
 
 ## Important
 
