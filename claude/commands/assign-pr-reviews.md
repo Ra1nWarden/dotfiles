@@ -26,14 +26,15 @@ For each GitHub ID, run in parallel:
 
 ```bash
 gh pr list --author <id> --state open --limit 20 \
-  --json number,title,additions,deletions,files,createdAt,reviews,labels,body,reviewDecision \
-  --jq '[.[] | {number, title, additions, deletions, createdAt, reviewDecision, reviews: [.reviews[] | select(.author.login != "cursor" and .author.login != "figma-opengrep") | {author: .author.login, state: .state}], labels: [.labels[].name], files: [.files[].path]}]'
+  --json number,title,additions,deletions,files,createdAt,reviews,labels,body,reviewDecision,isDraft \
+  --jq '[.[] | {number, title, additions, deletions, createdAt, reviewDecision, isDraft, reviews: [.reviews[] | select(.author.login != "cursor" and .author.login != "figma-opengrep") | {author: .author.login, state: .state}], labels: [.labels[].name], files: [.files[].path]}]'
 ```
 
 ### Step 2: Filter PRs
 
 Remove PRs that match ANY of these criteria:
 - **Older than 2 weeks** from today's date
+- **Draft**: `isDraft == true`
 - **Already approved**: `reviewDecision == "APPROVED"`
 - **WIP**: title contains "WIP" (case-insensitive) OR labels contain "wip"
 - **Project filter**: if `--project` was given, exclude PRs where the keyword does NOT appear in the title, any label, or any file path
