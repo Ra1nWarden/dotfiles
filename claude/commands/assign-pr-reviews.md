@@ -18,6 +18,58 @@ Parse `$ARGUMENTS` to extract:
 
 If no arguments are provided, ask the user for the list of GitHub usernames.
 
+## State Persistence
+
+Assignment state is persisted across sessions in a JSON file:
+
+```
+~/.claude/projects/-Users-zwang-figma-figma/pr-assignments-state.json
+```
+
+### State file schema
+
+```json
+{
+  "round": 9,
+  "date": "2026-04-15",
+  "team": {
+    "<github-id>": {
+      "name": "Human-readable name",
+      "slackHandle": "@slack-handle",
+      "role": "reviewer | no-review"
+    }
+  },
+  "assignments": {
+    "<pr-number>": {
+      "author": "<github-id>",
+      "reviewer": "<github-id>",
+      "title": "PR title",
+      "size": "M",
+      "lines": 441,
+      "assignedRound": 8,
+      "status": "new | carried | approved",
+      "reviewCount": 0
+    }
+  }
+}
+```
+
+### Reading state (Step 0)
+
+At the start of each run, read the state file if it exists. Use it to:
+- **Pre-populate team roster**: reuse known `name` and `slackHandle` mappings so you don't need to ask or look them up again
+- **Detect stale assignments**: if a PR was assigned in a previous round but still has `reviewCount: 0`, flag it with a warning and how many rounds it has been unreviewed
+- **Increment round number**: set the new round to `previous round + 1`
+
+If the state file does not exist, start fresh at round 1.
+
+### Writing state (Step 6)
+
+After presenting results (Step 5), write the updated state file with:
+- Incremented round number and today's date
+- Full team roster with any newly learned name/slackHandle mappings
+- All active assignments (carried over + new). Remove PRs that were approved or excluded this round.
+
 ## Process
 
 ### Step 1: Fetch open PRs
@@ -123,15 +175,23 @@ A copy-pasteable Slack message block formatted as:
 • <pr-url> (Author, Size) — short description
 ```
 
-Use the reviewer's GitHub username for the @-mention (the user can adjust to Slack handles). Include full GitHub PR URLs (not shorthand). Group by reviewer.
+Use the reviewer's **Slack handle** from the state file if known. If not known, look up via `mcp__slack__users` and save to state. Fall back to GitHub username if Slack lookup fails. Include full GitHub PR URLs (https://github.com/figma/figma/pull/<number>). Group by reviewer.
 
 If there are PRs with zero reviews that were assigned in a previous round, add a reminder line with the full PR link.
 
 When `--ignore-reviewed` is set, **exclude** carried-over PRs that are in the **author's court** from the Slack message. Only include PRs where the reviewer needs to take action (reviewer's court + new assignments).
+
+### Step 6: Save state
+
+After presenting results, write the updated state file to `~/.claude/projects/-Users-zwang-figma-figma/pr-assignments-state.json` with:
+- Incremented round number and today's date
+- Full team roster (including any newly learned name/slackHandle mappings — preserve existing mappings for team members not in this round)
+- All active assignments (carried over + new). Remove PRs that were approved or excluded this round.
+- For each assignment, record `assignedRound` (the round it was first assigned) and `reviewCount` (number of team reviews on the PR)
 
 ## Important
 
 - Run all `gh` commands in parallel where possible to minimize latency
 - Pipe verbose output through `| head` or `| tail` to keep context clean
 - If a PR has no description (default template only), flag it in the output
-- Do NOT create memory entries or modify any files — this command only produces output
+- Do NOT create memory entries — but DO write the state file after each round
