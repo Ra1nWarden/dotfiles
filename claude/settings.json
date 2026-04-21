@@ -13,6 +13,8 @@
     "address-pr-comments@figma-internal": true,
     "figma-plugin@figma-internal": true,
     "clangd-lsp@claude-plugins-official": true,
-    "asana@claude-plugins-official": true
+    "asana@claude-plugins-official": true,
+    "slack@claude-plugins-official": true,
+    "notion@claude-plugins-official": true
   }
 }
