@@ -122,17 +122,22 @@ For each filtered PR, check if any team member (from the GitHub IDs list) has al
 For each carried-over PR, determine whether the ball is in the **reviewer's court** or the **author's court** by fetching the timeline:
 
 ```bash
-gh pr view <number> --json commits,reviews \
-  --jq '{latest_commit: [.commits[].committedDate] | sort | last, reviews: [.reviews[] | select(.author.login != "cursor" and .author.login != "figma-opengrep") | {author: .author.login, state: .state, submittedAt: .submittedAt}]}'
+gh pr view <number> --json commits,reviews,comments,author \
+  --jq '.author.login as $author | {
+    latest_commit: ([.commits[].committedDate] | sort | last),
+    latest_non_author_action: ([
+      (.reviews[]  | select(.author.login != $author and .author.login != "cursor" and .author.login != "figma-opengrep" and .author.login != "aviator-app") | .submittedAt),
+      (.comments[] | select(.author.login != $author and .author.login != "cursor" and .author.login != "figma-opengrep" and .author.login != "aviator-app" and .author.login != "figma-ci-4-production") | .createdAt)
+    ] | sort | last)
+  }'
 ```
 
 Run these in parallel for all carried-over PRs.
 
 **Court rules:**
-- Compare the **latest team reviewer action** (comment or changes_requested) against the **latest author action** (commit pushed or reply comment after the reviewer's action)
-- If the reviewer acted last and the author has NOT pushed commits or replied since → **author's court** (reviewer is waiting on the author)
-- If the author pushed commits or replied after the reviewer's last action → **reviewer's court** (reviewer needs to re-review)
-- PRs with no team reviews at all are always **reviewer's court** (they need initial review)
+- Compare the **latest non-author, non-bot action** (any review or comment from anyone except the PR author and known bots) against the **latest commit** pushed by the author
+- If a non-author has acted more recently than the latest commit → **author's court** (someone responded, author hasn't pushed since)
+- If the latest commit is more recent than any non-author action, OR if there are no non-author actions at all → **reviewer's court** (needs review or re-review)
 
 Add a "Court" column to the carried-over table showing `Author` or `Reviewer`.
 
