@@ -117,18 +117,22 @@ asana_get_task_stories(task_gid=TASK_GID)
 
 From the stories, extract:
 - **Comments**: Summarize key discussion points, decisions, or progress notes
-- **Links**: GitHub PRs, Figma files, Notion docs, Slack threads, etc.
 - **Status changes**: When the task moved between statuses
 
-Use this context to write a more informative summary for each task in the
-final report. Task titles alone are often too terse — the stories reveal
-what was actually shipped (e.g., "Canvas entrypoints not being created from
-left panel chat" becomes "Fixed bug where prompts sent from the left panel
-chat weren't generating on-canvas entrypoints, caused by missing thread
-association logic").
+Use this context to write a more informative summary in the final report.
+Task titles alone are often too terse — the stories reveal what was actually
+shipped. Do **not** embed PR numbers or PR URLs in the final report body.
 
 Parallelize story fetches across tasks using subagents to avoid slow
 sequential calls.
+
+### Optional: merge supplementary sources
+
+If the user provides additional context sources (e.g., a FigJam board with a
+weekly standup column, a Google Doc, a Slack digest), fetch those too and
+merge them into the Completed This Week section. For FigJam boards, use
+`mcp__plugin_figma-plugin_figma-mcp-prod__get_figjam` (or the staging
+equivalent) with the fileKey and nodeId parsed from the URL.
 
 ---
 
@@ -136,8 +140,7 @@ sequential calls.
 
 Using the detailed task data, categorize into:
 
-1. **Completed within window**: Tasks completed in the time window. Note
-   assignee for each.
+1. **Completed within window**: Tasks completed in the time window.
 
 2. **In progress / Pending**: Open tasks that have assignees and appear active
    (have due dates, are in active sections, have status fields set, etc.).
@@ -145,46 +148,91 @@ Using the detailed task data, categorize into:
 3. **At risk / Needs attention**: Tasks that are past due, unassigned but
    tagged as high priority, or have a blocked status.
 
-If custom fields were fetched and priority data is available, tag each task
-with its priority level and rank Blockers above other items.
+If custom fields were fetched and priority data is available, rank Blockers
+above other items.
+
+### Group by workstream, not by ticket
+
+The final report is organized by **workstream / theme**, not by individual
+ticket. Before drafting, cluster the completed tickets and any supplementary
+updates into 6–10 thematic buckets (e.g., "NUX", "Mini-chat retrieval",
+"Work receipts polishes", "Beta rollout infrastructure", "Stop button",
+"Resume inflight chat states"). Each bucket becomes one bullet in the
+Completed This Week section, rolling up multiple related tickets into a
+single outcome-focused statement.
 
 ---
 
 ## Phase 5: Draft the Status Update
 
-Present the update in this format:
+Use a strict three-section format. Do **not** add a Risks section, a Progress
+section, or any other top-level sections beyond these three.
 
 ```
 ## <Project Name> — <Month Day>
 
 **Status**: <On Track / At Risk / Off Track> <color emoji>
 
-<2-3 sentence summary: wins, current focus, and risks if any>
+<2-4 sentence summary that explicitly explains the status color. If At Risk
+or Off Track, name the specific blockers or slips driving that call. Reflect
+the current state of the launch/milestone accurately — verify against user
+context or recent conversation before asserting something has shipped or is
+live.>
 
 ### Completed This Week
 
-- <task name> (<assignee>)
+- **<Workstream / theme name>** — <1–2 sentence outcome summary rolling up
+  the tickets and updates in this bucket. No IC names. No PR numbers or PR
+  links.>
 - ...
 
 ### Pending Next
 
-1. <next priority>
+1. **<Project / theme, not a single ticket>** — <brief description of what
+   that entails and why it matters>
 2. ...
 ```
 
-**Guidelines**:
-- Keep the tone positive and concise
-- Lead with wins before risks
-- Group completed items by priority if priority data is available
-- Use numbered list for pending items to signal priority order
-- Keep the full update under 30 lines — this is a status update, not a novel
+**Hard rules** (learned from user feedback):
+
+- **Three sections only**: Status / Completed This Week / Pending Next.
+- **No IC names** in bullet points. The report is about workstream progress,
+  not individual attribution. (Exception: names may appear in the status
+  summary when referring to a specific person's circumstance, e.g.,
+  someone's PTO affecting coverage, and only if the user's input explicitly
+  flags it.)
+- **No PR links, PR numbers, or GitHub URLs** in the report body. Other
+  links (tech-spec docs, runbooks) are acceptable when meaningfully
+  referenced.
+- **Completed This Week = workstream rollups, not ticket lists**. Merge
+  multiple related tickets into a single themed bullet.
+- **Pending Next = thematic projects, not tickets**. Each item should be a
+  named workstream/project with a short "what that entails" clause, not a
+  one-line ticket title.
+- **Status summary must justify its color**. If At Risk, state why in the
+  summary itself (e.g., "Marking at risk as we continue to have open Beta
+  blockers and we are still investigating solutions to Stop action.").
+- **Verify launch state**. Do not assert that a product/milestone is "live",
+  "launched", "shipped", or "feature complete" unless the user's input or
+  recent conversation explicitly confirms it. When in doubt, frame work as
+  in-progress.
+- Keep the full update concise — aim for under 30 lines.
 
 ---
 
 ## Phase 6: Review and Post
 
 1. Present the draft to the user for review.
-2. Iterate on feedback until the user approves.
-3. When the user says to post, check if an Asana tool for creating project
-   statuses is available. If not, format the update as plain text ready
-   to copy-paste into Asana.
+2. Iterate on feedback until the user approves. **Do not post until the user
+   explicitly says to post** — even in auto mode, posting to Asana affects
+   shared state and requires an explicit go-ahead. If the user says "hold"
+   or "do not post", hold the draft indefinitely.
+3. When the user says to post, use
+   `mcp__plugin_asana_asana__asana_create_project_status` with:
+   - `project_gid`: the project GID
+   - `color`: `green` | `yellow` | `red`
+   - `title`: `<Project Name> - <Month Day>`
+   - `text`: plain-text version of the draft (convert markdown bullets to
+     dashes; drop bold markers; use `----------------------------------------`
+     as section separators to match prior-status convention)
+4. Confirm the posted status ID back to the user.
