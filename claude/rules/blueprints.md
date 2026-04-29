@@ -69,16 +69,26 @@ Present the link to the user so they can click to open it in a browser.
 - If rebase fails, STOP and alert the user with conflict details. Do not
   continue — blueprint data may be at risk.
 
-## Plan Mode Integration
+## Plan Workflow
 
-When using `EnterPlanMode` / `ExitPlanMode` for non-trivial tasks:
+For non-trivial tasks, the plan file must be **written, committed, and
+pushed as soon as the plan is generated** — *before* it is presented to
+the user for approval. Do not gate the commit on user approval.
 
-1. Explore the codebase and design the plan as normal during plan mode.
-2. Before exiting plan mode, write the plan to the blueprints repo:
+Because Claude Code's `EnterPlanMode` blocks file writes, do **not** use
+`EnterPlanMode` for the design phase — it would force the commit to
+happen only after the user approves via `ExitPlanMode`. Instead,
+self-enforce read-only research using `Read`, `Grep`, `Glob`, and
+`Explore` subagents.
+
+1. Research the codebase with read-only tools.
+2. Draft the plan content.
+3. Write the plan to `$BLUEPRINTS_DIR/<project>/plan/<timestamp>-<slug>.md`
+   (create the directory on first write):
    ```sh
    mkdir -p "$BLUEPRINTS_DIR/<project>/plan/"
    ```
-   Write the plan as `<timestamp>-<slug>.md` using this structure:
+   Use this structure:
    ```markdown
    # Plan: <Title>
 
@@ -94,8 +104,11 @@ When using `EnterPlanMode` / `ExitPlanMode` for non-trivial tasks:
    ## Tasks
    Ordered list of implementation steps.
    ```
-3. Run commit-on-write after saving the plan.
-4. Present the plan to the user via `ExitPlanMode` for approval.
+4. Immediately run commit-on-write to push the plan; capture the remote URL.
+5. Present the plan summary and the URL to the user for approval (in chat,
+   or via `ExitPlanMode` if you want a formal approval gate — by this point
+   the file is already committed, so plan mode no longer blocks anything).
+6. Begin implementation only after the user approves.
 ## Archive Protocol
 
 Blueprints are **not** archived automatically. Only archive when the user
