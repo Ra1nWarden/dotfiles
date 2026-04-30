@@ -1,6 +1,6 @@
 ---
 description: Fetch open PRs for a group of engineers and evenly distribute review assignments based on PR size, relevance, and existing reviews
-argument-hint: <github-id-1> <github-id-2> ... [--no-review <github-id>] [--project <keyword>] [--ignore-reviewed]
+argument-hint: <github-id-1> <github-id-2> ... [--no-review <github-id>] [--project <keyword>] [--include-author-court]
 ---
 
 # PR Review Assignment
@@ -14,7 +14,7 @@ Parse `$ARGUMENTS` to extract:
 - **GitHub IDs**: All positional args (space-separated GitHub usernames). These people are both PR authors AND potential reviewers.
 - **`--no-review <id>`**: Can appear multiple times. These people's PRs are included in the pool, but they will NOT be assigned any reviews (e.g., non-engineers, people OOO). Remove them from the reviewer list.
 - **`--project <keyword>`**: Optional. If provided, filter PRs to only those matching this keyword in title, labels, or file paths. If omitted, include all PRs.
-- **`--ignore-reviewed`**: Optional flag. When set, exclude carried-over PRs from the Slack message if the reviewer has already acted (commented or requested changes) and the author has NOT responded with new commits or replies since. These PRs are in the **author's court**, not the reviewer's.
+- **`--include-author-court`**: Optional flag. By default, carried-over PRs in the **author's court** (reviewer has already acted, author hasn't pushed since) are excluded from the Slack message — the reviewer doesn't need to do anything until the author responds. Pass this flag to include them anyway (useful for nudging slow authors).
 
 If no arguments are provided, ask the user for the list of GitHub usernames.
 
@@ -117,9 +117,9 @@ When a stack is detected:
 
 For each filtered PR, check if any team member (from the GitHub IDs list) has already left a review (COMMENTED, APPROVED, or CHANGES_REQUESTED). If so, mark that PR as "carried over" with the existing reviewer. Do NOT reassign it.
 
-### Step 3.5: Determine court (only when `--ignore-reviewed` is set)
+### Step 3.5: Determine court (always)
 
-For each carried-over PR, determine whether the ball is in the **reviewer's court** or the **author's court** by fetching the timeline:
+For every carried-over PR, determine whether the ball is in the **reviewer's court** or the **author's court** by fetching the timeline. This is required — court state drives both the carried-over table and the Slack message filtering.
 
 ```bash
 gh pr view <number> --json commits,reviews,comments,author \
@@ -184,7 +184,11 @@ Use the reviewer's **Slack handle** from the state file if known. If not known, 
 
 If there are PRs with zero reviews that were assigned in a previous round, add a reminder line with the full PR link.
 
-When `--ignore-reviewed` is set, **exclude** carried-over PRs that are in the **author's court** from the Slack message. Only include PRs where the reviewer needs to take action (reviewer's court + new assignments).
+**Default behavior:** **exclude** carried-over PRs that are in the **author's court** from the Slack message. The reviewer doesn't need to do anything when the ball is on the author — surfacing those PRs is noise. The Slack message should only include PRs where the reviewer needs to take action (reviewer's court + new assignments).
+
+The full carried-over table (Step 5, section 2) still shows all carried PRs with their court column for visibility, but the Slack message at the end is filtered.
+
+Pass `--include-author-court` to override this — useful when you want to nudge slow authors by surfacing the assignment anyway.
 
 ### Step 6: Save state
 
