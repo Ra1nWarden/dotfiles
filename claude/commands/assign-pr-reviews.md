@@ -110,8 +110,9 @@ Group filtered PRs into **stacks** — sets of PRs from the same author that for
 When a stack is detected:
 - Treat the stack as a **single assignment unit** — all PRs in the stack go to the same reviewer
 - If any PR in the stack already has a team reviewer (carried over), assign the entire stack to that reviewer
-- In the output, visually group stacked PRs together and label the stack (e.g., "Stack: activeViewState atom refactor (3 PRs)")
-- For load balancing, count a stack as 1 assignment unit but sum the total lines across all PRs in the stack
+- **Assign only the deps-free PR(s) this round** — i.e., the bottom of the stack (whose base is `master` or another already-merged branch). Subsequent PRs are blocked by upstream dependencies and shouldn't be Slack-pinged until the parent merges. They'll surface as actionable in a future round once their base lands.
+- In the output, visually group stacked PRs together and label the stack (e.g., "Stack: activeViewState atom refactor (3 PRs, assigning #N first)")
+- For load balancing, count the deps-free PR as 1 assignment unit (queued ones don't add to current load)
 
 ### Step 3: Identify existing reviewers
 
