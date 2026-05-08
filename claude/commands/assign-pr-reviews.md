@@ -124,14 +124,16 @@ For every carried-over PR, determine whether the ball is in the **reviewer's cou
 
 ```bash
 gh pr view <number> --json commits,reviews,comments,author \
-  --jq '.author.login as $author | {
+  --jq '.author.login as $author | (["cursor","figma-opengrep","aviator-app"]) as $bots | {
     latest_commit: ([.commits[].committedDate] | sort | last),
     latest_non_author_action: ([
-      (.reviews[]  | select(.author.login != $author and .author.login != "cursor" and .author.login != "figma-opengrep" and .author.login != "aviator-app") | .submittedAt),
-      (.comments[] | select(.author.login != $author and .author.login != "cursor" and .author.login != "figma-opengrep" and .author.login != "aviator-app" and .author.login != "figma-ci-4-production") | .createdAt)
+      (.reviews[]  | select(.author.login != $author and ($bots | index(.author.login) | not) and (.author.login | test("^figma-ci-") | not)) | .submittedAt),
+      (.comments[] | select(.author.login != $author and ($bots | index(.author.login) | not) and (.author.login | test("^figma-ci-") | not)) | .createdAt)
     ] | sort | last)
   }'
 ```
+
+**Bot filter:** excludes `cursor`, `figma-opengrep`, `aviator-app`, plus any account matching `figma-ci-*` (covers `figma-ci-4-production`, `figma-ci-5-production`, etc.).
 
 Run these in parallel for all carried-over PRs.
 
