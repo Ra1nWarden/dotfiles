@@ -1,0 +1,42 @@
+model = "gpt-5.5"
+personality = "pragmatic"
+model_reasoning_effort = "medium"
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+web_search = "cached"
+
+[features]
+child_agents_md = true
+multi_agent = true
+
+[plugins."github@openai-curated"]
+enabled = true
+
+[plugins."browser-use@openai-bundled"]
+enabled = true
+
+[plugins."computer-use@openai-bundled"]
+enabled = true
+
+[plugins."build-web-apps@openai-curated"]
+enabled = true
+
+[plugins."documents@openai-primary-runtime"]
+enabled = true
+
+[plugins."spreadsheets@openai-primary-runtime"]
+enabled = true
+
+[plugins."presentations@openai-primary-runtime"]
+enabled = true
+
+[plugins."gmail@openai-curated"]
+enabled = true
+
+[marketplaces.openai-bundled]
+last_updated = "2026-05-11T06:44:26Z"
+source_type = "local"
+source = "/Users/ra1nwarden/.codex/.tmp/bundled-marketplaces/openai-bundled"
+
+[projects."/Users/ra1nwarden/.dotfiles"]
+trust_level = "trusted"

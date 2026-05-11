@@ -15,6 +15,11 @@
     ~/.claude/commands: claude/commands
     ~/.claude/agents: claude/agents
     ~/.claude/rules: claude/rules
+    ~/.codex/config.toml: codex/config.toml
+    ~/.codex/AGENTS.md: codex/AGENTS.md
+    ~/.codex/rules: codex/rules
+    ~/.codex/agents: codex/agents
+    ~/.agents/skills: codex/skills
 
 - shell:
   - [git submodule update --init --recursive, Installing vim plugins]

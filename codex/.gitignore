@@ -1,0 +1,12 @@
+# Track only portable Codex configuration.
+*
+!.gitignore
+!config.toml
+!AGENTS.md
+!rules/
+!rules/*.rules
+!agents/
+!agents/*.toml
+!skills/
+!skills/*/
+!skills/*/SKILL.md
