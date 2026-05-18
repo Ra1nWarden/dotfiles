@@ -49,6 +49,7 @@ When push succeeds, present a clickable GitHub URL for each new or moved bluepri
    - `https://github.com/owner/repo.git` -> `https://github.com/owner/repo`
 3. Append `/blob/<branch>/<project>/<type>/<file>` using the branch that was pushed, normally `main`.
 4. Include the resulting Markdown link in the user-facing response.
+5. If the blueprint is a plan or design that precedes implementation, stop after presenting the link and wait for explicit user approval before making code changes.
 
 ## Plan Mode Constraint
 
