@@ -129,13 +129,13 @@ Note anything non-obvious that a developer new to this code would need to know.
 
 ## Phase 5: Commit and Present
 
-1. **Commit-and-push-on-write**: Run the blueprints commit protocol:
+1. **Commit-on-write**: Run the blueprints commit protocol:
    ```sh
    cd "$BLUEPRINTS_DIR" && git add -A "$PROJECT/" && \
      git commit -m "research($PROJECT): <slug>" && \
      git push || (git pull --rebase && git push)
    ```
-   If the first push fails because the remote branch moved, pull with rebase and retry. If no remote is configured, push fails for any other reason, or rebase fails, STOP and alert the user.
+   If push fails due to no remote, warn but continue.
 
 2. **Present to the user**:
    - The full research brief content (not just a summary — the user wants to
@@ -155,6 +155,6 @@ When the user asks follow-up questions after the initial research:
 2. **Update the existing research brief** — integrate the new findings into the
    relevant sections (add components, expand flows, update API surface, etc.).
    Do not create a separate file.
-3. **Commit-and-push-on-write**: Run the blueprints commit protocol after updating.
+3. **Commit-on-write**: Run the blueprints commit protocol after updating.
 4. **Present the updated sections** to the user — show what changed, not the
    entire brief again.

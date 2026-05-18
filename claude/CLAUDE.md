@@ -4,7 +4,7 @@
 
 - For non-trivial tasks, write and push the plan to the blueprints repo as soon as it's generated, BEFORE presenting it for approval. Do NOT make any code changes during planning.
   1. Research the codebase using read-only tools (Read, Grep, Glob, Explore subagents). Do NOT use the built-in `EnterPlanMode` tool for the design phase — it blocks the Write tool, which would force the plan commit to happen only after you approve via `ExitPlanMode`.
-  2. Once the plan is fully drafted, write it to `$BLUEPRINTS_DIR/<project>/plan/` following the blueprints convention (see `~/.dotfiles/claude/rules/blueprints.md`) and run commit-and-push-on-write immediately.
+  2. Once the plan is fully drafted, write it to `$BLUEPRINTS_DIR/<project>/plan/` following the blueprints convention (see `~/.dotfiles/claude/rules/blueprints.md`) and run commit-on-write immediately.
   3. Present the plan summary and the remote URL to me for review and approval (in chat, or via `ExitPlanMode` for a formal approval gate — the file is already committed at this point).
   4. Only begin implementation after I approve the plan.
 - For trivial tasks (typos, single-line fixes, obvious changes), skip plan mode and proceed directly.
