@@ -41,7 +41,14 @@ git push || (git pull --rebase && git push)
 
 If the first push fails because the remote branch moved, pull with rebase and retry the push. If no remote is configured, push fails for any other reason, or rebase conflicts, stop and ask the user.
 
-When push succeeds, derive a GitHub-style browser URL from `git remote get-url origin` and present it to the user.
+When push succeeds, present a clickable GitHub URL for each new or moved blueprint file:
+
+1. Derive the remote base with `git -C "$BLUEPRINTS_DIR" remote get-url origin`.
+2. Convert SSH or HTTPS remotes to a browser base:
+   - `git@github.com:owner/repo.git` -> `https://github.com/owner/repo`
+   - `https://github.com/owner/repo.git` -> `https://github.com/owner/repo`
+3. Append `/blob/<branch>/<project>/<type>/<file>` using the branch that was pushed, normally `main`.
+4. Include the resulting Markdown link in the user-facing response.
 
 ## Plan Mode Constraint
 

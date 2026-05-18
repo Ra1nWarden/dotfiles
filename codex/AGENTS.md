@@ -37,6 +37,7 @@ Use `$BLUEPRINTS_DIR` as the mandatory home for git-tracked research, design spe
   - `$BLUEPRINTS_DIR/<project>/archive/`
 - Name files `<YYYYMMDDHHMM>-<slug>.md`.
 - After every blueprint write or move, commit and push from `$BLUEPRINTS_DIR` so the remote is immediately current.
+- After every successful blueprint push, present a clickable GitHub URL for each new or moved blueprint file. Derive the base from `git -C "$BLUEPRINTS_DIR" remote get-url origin`, convert `git@github.com:owner/repo.git` or `https://github.com/owner/repo.git` to `https://github.com/owner/repo`, and append `/blob/<branch>/<project>/<type>/<file>` using the pushed branch, normally `main`.
 - If the remote branch has moved, pull with rebase and retry the push. If no remote is configured, push fails for any other reason, or rebase conflicts, stop and ask the user.
 
 ## Subagents
