@@ -36,8 +36,8 @@ Use `$BLUEPRINTS_DIR` as the mandatory home for git-tracked research, design spe
   - `$BLUEPRINTS_DIR/<project>/review/`
   - `$BLUEPRINTS_DIR/<project>/archive/`
 - Name files `<YYYYMMDDHHMM>-<slug>.md`.
-- After every blueprint write or move, commit-on-write from `$BLUEPRINTS_DIR`.
-- If push fails because there is no remote, warn and continue. If rebase conflicts, stop and ask the user.
+- After every blueprint write or move, commit and push from `$BLUEPRINTS_DIR` so the remote is immediately current.
+- If the remote branch has moved, pull with rebase and retry the push. If no remote is configured, push fails for any other reason, or rebase conflicts, stop and ask the user.
 
 ## Subagents
 

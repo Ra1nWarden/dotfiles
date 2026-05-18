@@ -22,7 +22,7 @@ Use this for non-trivial design before implementation.
    - Approach A
    - Approach B
    - Recommendation
-7. If persisting, save to `$BLUEPRINTS_DIR/<project>/spec/<timestamp>-<slug>.md` and run commit-on-write.
+7. If persisting, save to `$BLUEPRINTS_DIR/<project>/spec/<timestamp>-<slug>.md` and run commit-and-push-on-write.
 8. If a design-reviewer agent is available, ask it for adversarial review. Append the review feedback and commit the update.
 
 ## Plan Mode Constraint

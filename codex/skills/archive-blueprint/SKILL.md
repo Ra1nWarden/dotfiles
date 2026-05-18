@@ -14,7 +14,7 @@ Move active blueprint files into `$BLUEPRINTS_DIR/<project>/archive/`.
 3. If a slug is provided, search active folders for matching files.
 4. If exactly one file matches, create the archive directory and move it there.
 5. If multiple files match, ask the user to choose.
-6. Run commit-on-write with message `archive(<project>): <slug>`.
+6. Run commit-and-push-on-write with message `archive(<project>): <slug>`.
 7. Report original path, archive path, and remote link when available.
 
 Do not archive automatically after implementation. Archive only when explicitly requested.

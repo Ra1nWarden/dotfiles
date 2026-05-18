@@ -31,7 +31,7 @@ Use this only after the user approves a design or plan.
 7. Address Critical and Warning findings once unless the user asks for a deeper cycle.
 8. Run integration verification: build, tests, typecheck, lint, and browser checks for UI where feasible.
 9. Compare the final diff against the approved design and report deviations.
-10. If persisting reviews or conformance reports, save them under `$BLUEPRINTS_DIR/<project>/review/` and run commit-on-write.
+10. If persisting reviews or conformance reports, save them under `$BLUEPRINTS_DIR/<project>/review/` and run commit-and-push-on-write.
 
 ## Constraints
 

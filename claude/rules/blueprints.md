@@ -40,7 +40,7 @@ Create on first write: `mkdir -p "$BLUEPRINTS_DIR/<project>/<type>/"`
 All files use `<timestamp>-<slug>.md` where timestamp is `date +%Y%m%d%H%M`.
 Example: `202604031530-auth-redesign.md`. No type-specific prefixes.
 
-## Commit-on-Write
+## Commit-and-Push-on-Write
 
 After every blueprint file write or move:
 
@@ -64,9 +64,10 @@ Convert to a browser URL and append the file path on the default branch:
 
 Present the link to the user so they can click to open it in a browser.
 
-- If `git push` fails because no remote is configured, warn the user but do
-  not treat it as a blocking error. The commit is still saved locally.
-- If rebase fails, STOP and alert the user with conflict details. Do not
+- If the first `git push` fails because the remote branch has moved, pull with
+  rebase and retry the push.
+- If no remote is configured, `git push` fails for any other reason, or rebase
+  fails, STOP and alert the user with conflict details. Do not
   continue — blueprint data may be at risk.
 
 ## Plan Workflow
@@ -104,7 +105,7 @@ self-enforce read-only research using `Read`, `Grep`, `Glob`, and
    ## Tasks
    Ordered list of implementation steps.
    ```
-4. Immediately run commit-on-write to push the plan; capture the remote URL.
+4. Immediately run commit-and-push-on-write to push the plan; capture the remote URL.
 5. Present the plan summary and the URL to the user for approval (in chat,
    or via `ExitPlanMode` if you want a formal approval gate — by this point
    the file is already committed, so plan mode no longer blocks anything).
@@ -120,4 +121,4 @@ mv "$BLUEPRINTS_DIR/<project>/<type>/<file>" \
    "$BLUEPRINTS_DIR/<project>/archive/"
 ```
 
-Then run commit-on-write.
+Then run commit-and-push-on-write.

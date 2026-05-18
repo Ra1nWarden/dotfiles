@@ -28,7 +28,7 @@ Use `$BLUEPRINTS_DIR/<project>/` with these folders:
 
 Create folders on first write. File names are `<YYYYMMDDHHMM>-<slug>.md`.
 
-## Commit-on-Write
+## Commit-and-Push-on-Write
 
 After every blueprint write or move:
 
@@ -39,10 +39,10 @@ git commit -m "<type>(<project>): <slug>" &&
 git push || (git pull --rebase && git push)
 ```
 
-If push fails due to no remote, warn and continue. If rebase conflicts, stop and ask the user.
+If the first push fails because the remote branch moved, pull with rebase and retry the push. If no remote is configured, push fails for any other reason, or rebase conflicts, stop and ask the user.
 
 When push succeeds, derive a GitHub-style browser URL from `git remote get-url origin` and present it to the user.
 
 ## Plan Mode Constraint
 
-If Codex Plan Mode is active, do not write blueprint files during the planning turn. Produce the plan in chat. Once the user switches out of Plan Mode and asks for implementation or persistence, write and commit the blueprint.
+If Codex Plan Mode is active, do not write blueprint files during the planning turn. Produce the plan in chat. Once the user switches out of Plan Mode and asks for implementation or persistence, write, commit, and push the blueprint.

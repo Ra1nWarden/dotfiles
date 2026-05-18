@@ -74,15 +74,16 @@ Once the target file is confirmed:
    mv "<source-path>" "$BLUEPRINTS_DIR/$PROJECT/archive/"
    ```
 
-3. **Commit-on-write** — run the blueprints commit protocol:
+3. **Commit-and-push-on-write** — run the blueprints commit protocol:
    ```sh
    cd "$BLUEPRINTS_DIR" && \
      git add -A "$PROJECT/" && \
      git commit -m "archive($PROJECT): <slug>" && \
      git push || (git pull --rebase && git push)
    ```
-   If push fails because no remote is configured, warn the user but do not
-   treat it as a blocking error. If rebase fails, STOP and alert the user.
+   If the first push fails because the remote branch moved, pull with rebase and retry.
+   If no remote is configured, push fails for any other reason, or rebase fails,
+   STOP and alert the user.
 
 4. **Build the archive link**: derive the remote URL and construct the browser
    link to the archived file:

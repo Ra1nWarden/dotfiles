@@ -111,13 +111,13 @@ Pros, cons, risks, effort estimate.
 Which approach and why. What assumptions does this depend on?
 ```
 
-4. **Commit-on-write**: Run the blueprints commit protocol:
+4. **Commit-and-push-on-write**: Run the blueprints commit protocol:
    ```sh
    cd "$BLUEPRINTS_DIR" && git add -A "$PROJECT/" && \
      git commit -m "spec($PROJECT): <slug>" && \
      git push || (git pull --rebase && git push)
    ```
-   If push fails due to no remote, warn but continue.
+   If the first push fails because the remote branch moved, pull with rebase and retry. If no remote is configured, push fails for any other reason, or rebase fails, STOP and alert the user.
 5. Tell the user the design doc has been written and briefly summarize it
 
 ---

@@ -22,7 +22,7 @@ Use this for comprehension only. Do not design or implement.
    - Main flows
    - Public API surface
    - Design decisions and patterns
-7. If persisting, save to `$BLUEPRINTS_DIR/<project>/research/<timestamp>-<slug>.md` and run commit-on-write.
+7. If persisting, save to `$BLUEPRINTS_DIR/<project>/research/<timestamp>-<slug>.md` and run commit-and-push-on-write.
 
 ## Follow-ups
 

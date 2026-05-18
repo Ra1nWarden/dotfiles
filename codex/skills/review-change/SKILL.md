@@ -24,4 +24,4 @@ Use a code-review stance: findings first, ordered by severity, with file and lin
    - Findings first, with severity and file references
    - Open questions or assumptions
    - Brief change summary only after findings
-6. If persisting, save to `$BLUEPRINTS_DIR/<project>/review/<timestamp>-<slug>.md` and run commit-on-write.
+6. If persisting, save to `$BLUEPRINTS_DIR/<project>/review/<timestamp>-<slug>.md` and run commit-and-push-on-write.
