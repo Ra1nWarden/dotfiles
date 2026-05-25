@@ -7,7 +7,7 @@
 - Use `rg` or `rg --files` for search. Prefer focused reads over dumping large files or logs into context.
 - Prefer `apply_patch` for manual edits. Use formatters and code generators only when they are part of the requested change.
 - Keep changes scoped to the task. Avoid opportunistic refactors and dependency churn.
-- Before answering any prompt, if the current directory is inside a git repository with a configured remote, run a fast-forward-only pull before proceeding. Prefer `git pull --ff-only origin master` when `origin/master` exists; otherwise pull the configured upstream or remote default branch, such as `origin/main`. If the pull cannot complete cleanly, stop and report the blocker instead of proceeding.
+- At the beginning of each Codex session, and whenever first entering a folder where you plan to make changes, if the current directory is inside a git repository with a configured remote, run a fast-forward-only pull before editing. Prefer `git pull --ff-only origin master` when `origin/master` exists; otherwise pull the configured upstream or remote default branch, such as `origin/main`. If the pull cannot complete cleanly, stop and report the blocker before making changes.
 - For non-trivial work, produce a decision-complete plan before implementation and persist the plan as a blueprint before making code changes. After pushing the committed blueprint to remote, stop and present the GitHub URL so the user can review it before any implementation starts. If Codex Plan Mode is active, stay read-only and present the plan in chat, then persist it as soon as the user switches out of Plan Mode or explicitly asks to save it.
 - Track meaningful multi-step work with a short checklist and keep the user informed while working.
 
