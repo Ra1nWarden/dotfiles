@@ -1,6 +1,7 @@
 model = "gpt-5.5"
 personality = "pragmatic"
-model_reasoning_effort = "high"
+model_reasoning_effort = "xhigh"
+service_tier = "priority"
 approval_policy = "on-request"
 sandbox_mode = "workspace-write"
 web_search = "cached"
@@ -44,3 +45,6 @@ trust_level = "trusted"
 [memories]
 generate_memories = false
 use_memories = false
+
+[desktop]
+default-service-tier = "priority"
