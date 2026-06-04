@@ -18,9 +18,6 @@ js_repl = false
 [plugins."github@openai-curated"]
 enabled = true
 
-[plugins."computer-use@openai-bundled"]
-enabled = true
-
 [plugins."build-web-apps@openai-curated"]
 enabled = true
 
@@ -42,6 +39,9 @@ enabled = true
 [plugins."browser@openai-bundled"]
 enabled = true
 
+[plugins."superpowers@openai-curated"]
+enabled = true
+
 [projects."/Users/ra1nwarden/.dotfiles"]
 trust_level = "trusted"
 
@@ -52,14 +52,26 @@ trust_level = "trusted"
 generate_memories = false
 use_memories = false
 
+[tui.model_availability_nux]
+"gpt-5.5" = 1
+
 [desktop]
+ambient-suggestions-enabled = true
+sansFontSize = 14
+codeFontSize = 13
+conversationDetailMode = "STEPS_COMMANDS"
 default-service-tier = "priority"
 keepRemoteControlAwakeWhilePluggedIn = true
 
 [marketplaces.openai-bundled]
-last_updated = "2026-05-25T05:31:33Z"
+last_updated = "2026-06-03T08:30:28Z"
 source_type = "local"
 source = "/Users/ra1nwarden/.codex/.tmp/bundled-marketplaces/openai-bundled"
+
+[marketplaces.openai-primary-runtime]
+last_updated = "2026-06-01T21:08:07Z"
+source_type = "local"
+source = "/Users/ra1nwarden/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
 
 [mcp_servers.node_repl]
 args = []
@@ -67,14 +79,14 @@ command = "/Applications/Codex.app/Contents/Resources/node_repl"
 startup_timeout_sec = 120
 
 [mcp_servers.node_repl.env]
-BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
-BROWSER_USE_MARKETPLACE_NAME = "openai-bundled"
-CODEX_CLI_PATH = "/Applications/Codex.app/Contents/Resources/codex"
-CODEX_HOME = "/Users/ra1nwarden/.codex"
 NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS = "1000"
 NODE_REPL_NODE_MODULE_DIRS = ""
 NODE_REPL_NODE_PATH = "/Applications/Codex.app/Contents/Resources/node"
-NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "167fdf579477181fba1773c1efb067b00c5a64fe85dafb50a2001bde198dc739"
 NODE_REPL_TRUSTED_CODE_PATHS = "/Users/ra1nwarden/.codex"
-NODE_REPL_UNTRUSTED_ENV_ALLOWLIST = "BROWSER_USE_MARKETPLACE_NAME"
-SKY_CUA_SERVICE_PATH = "/Users/ra1nwarden/.codex/.tmp/bundled-marketplaces/openai-bundled/plugins/computer-use/Codex Computer Use.app"
+CODEX_HOME = "/Users/ra1nwarden/.codex"
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "4b6bfaf4ed2ce9b5cd68e60a61642eb4927a36306ba8c8993f6058607b3530fb"
+BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
+NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = "Control the in-app browser in conjunction with the Browser Plugin."
+NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = "Control the Chrome browser in conjunction with the Chrome Plugin. Prefer this method of controlling Chrome over alternatives (such as Computer Use) unless the user explicitly mentions an alternative."
+BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
+CODEX_CLI_PATH = "/Applications/Codex.app/Contents/Resources/codex"
