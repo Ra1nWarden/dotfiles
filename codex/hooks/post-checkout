@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# Re-apply portable Codex config after a checkout brings in new portable settings.
+exec "$(git rev-parse --show-toplevel)/codex/bin/codex-sync"

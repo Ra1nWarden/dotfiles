@@ -1,0 +1,108 @@
+#!/usr/bin/env python3
+"""codex-sync: reconcile the tracked portable Codex config with the machine-local live config.
+
+  - Portable (tracked, hand-edited): <repo>/codex/config.portable.toml
+  - Live (untracked, app-owned):      $CODEX_HOME/config.toml or ~/.codex/config.toml
+
+Splices the portable sections into the live file while PRESERVING the machine
+sections already present there. Portable vs machine is a partition by top-level
+name (see codex/portable-keys.txt), not a deep merge, so there is no conflict
+resolution. Machine state never leaves the live file, so the app can't lose it.
+
+Idempotent. Self-migrates the old symlink (~/.codex/config.toml -> repo) into a
+real file on first run.
+"""
+import os
+import sys
+import tempfile
+
+CODEX_DIR = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+VENDOR = os.path.join(CODEX_DIR, "vendor")
+PORTABLE = os.path.join(CODEX_DIR, "config.portable.toml")
+KEYS_FILE = os.path.join(CODEX_DIR, "portable-keys.txt")
+
+sys.path.insert(0, VENDOR)
+import tomlkit  # noqa: E402  (vendored)
+
+
+def live_path():
+    home = os.environ.get("CODEX_HOME") or os.path.join(os.path.expanduser("~"), ".codex")
+    return os.path.join(home, "config.toml")
+
+
+def load_allowlist():
+    allow = set()
+    with open(KEYS_FILE, encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if line and not line.startswith("#"):
+                allow.add(line)
+    return allow
+
+
+def read_text(path):
+    try:
+        with open(path, encoding="utf-8") as f:
+            return f.read()
+    except FileNotFoundError:
+        return None
+
+
+def main():
+    allow = load_allowlist()
+    portable_text = read_text(PORTABLE)
+    if portable_text is None:
+        sys.exit("codex-sync: portable file not found: %s" % PORTABLE)
+
+    live = live_path()
+
+    # Self-migration: if the live path is still the old symlink into the repo,
+    # read its content, then remove the symlink so we write a real file.
+    live_text = None
+    if os.path.islink(live):
+        live_text = read_text(os.path.realpath(live))
+        os.unlink(live)
+        print("codex-sync: replaced symlink %s with a real file" % live)
+    elif os.path.exists(live):
+        live_text = read_text(live)
+
+    # Machine sections = the live file minus the allowlisted (portable) keys.
+    machine_text = ""
+    if live_text:
+        machine = tomlkit.parse(live_text)
+        for k in list(machine.keys()):
+            if k in allow:
+                del machine[k]
+        machine_text = tomlkit.dumps(machine).strip()
+
+        # Drift warning: a portable setting was changed outside the repo (e.g. via
+        # the app UI). The repo value wins; surface it so the change isn't lost silently.
+        live_vals = tomlkit.parse(live_text).unwrap()
+        portable_vals = tomlkit.parse(portable_text).unwrap()
+        drift = sorted(k for k in allow
+                       if k in live_vals and live_vals.get(k) != portable_vals.get(k))
+        if drift:
+            print("codex-sync: WARNING portable settings changed outside the repo; "
+                  "repo value wins for: %s" % ", ".join(drift), file=sys.stderr)
+
+    out = portable_text.strip() + "\n"
+    if machine_text:
+        out += "\n" + machine_text + "\n"
+
+    # Atomic write of the live file.
+    os.makedirs(os.path.dirname(live), exist_ok=True)
+    fd, tmp = tempfile.mkstemp(dir=os.path.dirname(live), prefix=".config.toml.")
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            f.write(out)
+        os.replace(tmp, live)
+    except BaseException:
+        if os.path.exists(tmp):
+            os.unlink(tmp)
+        raise
+
+    print("codex-sync: wrote %s" % live)
+
+
+if __name__ == "__main__":
+    main()

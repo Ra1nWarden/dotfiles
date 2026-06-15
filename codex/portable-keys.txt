@@ -1,0 +1,24 @@
+# Portable Codex config allowlist.
+#
+# Each non-empty, non-comment line is a TOP-LEVEL config name that codex-sync
+# keeps in the tracked repo file (codex/config.portable.toml). Anything NOT
+# listed here is treated as machine-specific and lives only in the untracked
+# live file (~/.codex/config.toml) — so new sections Codex invents default to
+# "machine, don't track".
+#
+# Classification is by top-level name: `plugins` matches every
+# [plugins."..."] table; `mcp_servers` (NOT listed) matches
+# [mcp_servers.node_repl.env]; etc.
+#
+# To track a new portable setting: add its top-level name here and commit.
+
+model
+personality
+model_reasoning_effort
+service_tier
+approval_policy
+sandbox_mode
+web_search
+features
+plugins
+memories
