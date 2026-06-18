@@ -10,6 +10,9 @@
 !bin/*
 !vendor/
 !vendor/**
+# Never track Python bytecode caches in vendored libraries.
+vendor/**/__pycache__/
+vendor/**/*.py[cod]
 !hooks/
 !hooks/*
 !rules/
