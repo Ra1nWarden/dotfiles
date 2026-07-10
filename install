@@ -15,8 +15,18 @@ git submodule update --init --recursive "${DOTBOT_DIR}"
 "${BASEDIR}/${DOTBOT_DIR}/${DOTBOT_BIN}" -d "${BASEDIR}" -c "${CONFIG}" "${@}"
 
 # Blueprints setup
-# Source .zshrc.local to check if BLUEPRINTS_DIR is already set
-[ -f ~/.zshrc.local ] && source ~/.zshrc.local 2>/dev/null || true
+# Read BLUEPRINTS_DIR without sourcing zsh-only startup code under bash.
+if [ -z "${BLUEPRINTS_DIR:-}" ] && [ -f ~/.zshrc.local ]; then
+  BLUEPRINTS_DIR="$(
+    sed -n 's/^[[:space:]]*export[[:space:]]\+BLUEPRINTS_DIR=//p' ~/.zshrc.local | tail -n 1
+  )"
+  BLUEPRINTS_DIR="${BLUEPRINTS_DIR/#\~/$HOME}"
+  BLUEPRINTS_DIR="${BLUEPRINTS_DIR%\"}"
+  BLUEPRINTS_DIR="${BLUEPRINTS_DIR#\"}"
+  BLUEPRINTS_DIR="${BLUEPRINTS_DIR%\'}"
+  BLUEPRINTS_DIR="${BLUEPRINTS_DIR#\'}"
+  [ -n "$BLUEPRINTS_DIR" ] && export BLUEPRINTS_DIR
+fi
 
 if [ -z "$BLUEPRINTS_DIR" ] && [ -t 0 ]; then
   echo ""
