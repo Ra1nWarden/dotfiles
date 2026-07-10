@@ -9,10 +9,14 @@ sections already present there. Portable vs machine is a partition by top-level
 name (see codex/portable-keys.txt), not a deep merge, so there is no conflict
 resolution. Machine state never leaves the live file, so the app can't lose it.
 
+Also adds the current BLUEPRINTS_DIR to sandbox_workspace_write.writable_roots in
+the live file, so Codex can update blueprint artifacts without per-write prompts.
+
 Idempotent. Self-migrates the old symlink (~/.codex/config.toml -> repo) into a
 real file on first run.
 """
 import os
+import shlex
 import sys
 import tempfile
 
@@ -46,6 +50,63 @@ def read_text(path):
             return f.read()
     except FileNotFoundError:
         return None
+
+
+def normalize_path(path):
+    return os.path.abspath(os.path.expandvars(os.path.expanduser(path)))
+
+
+def unquote_shell_value(value):
+    try:
+        parts = shlex.split(value, comments=True, posix=True)
+    except ValueError:
+        return value.strip().strip("\"'")
+    return parts[0] if parts else ""
+
+
+def blueprints_dir():
+    value = os.environ.get("BLUEPRINTS_DIR", "").strip()
+    if value:
+        return normalize_path(value)
+
+    zshrc_local = os.path.join(os.path.expanduser("~"), ".zshrc.local")
+    text = read_text(zshrc_local)
+    if not text:
+        return None
+
+    candidate = None
+    for line in text.splitlines():
+        line = line.strip()
+        if not line.startswith("export "):
+            continue
+        assignment = line[len("export "):]
+        if assignment.startswith("BLUEPRINTS_DIR="):
+            candidate = unquote_shell_value(assignment.split("=", 1)[1])
+
+    return normalize_path(candidate) if candidate else None
+
+
+def add_blueprints_writable_root(config_text):
+    root = blueprints_dir()
+    if not root:
+        return config_text
+
+    config = tomlkit.parse(config_text)
+    workspace_write = config.get("sandbox_workspace_write")
+    if workspace_write is None:
+        workspace_write = tomlkit.table()
+        config["sandbox_workspace_write"] = workspace_write
+
+    roots = workspace_write.get("writable_roots")
+    if roots is None:
+        roots = tomlkit.array()
+        workspace_write["writable_roots"] = roots
+
+    existing = {str(item) for item in roots}
+    if root not in existing:
+        roots.append(root)
+
+    return tomlkit.dumps(config)
 
 
 def main():
@@ -88,6 +149,7 @@ def main():
     out = portable_text.strip() + "\n"
     if machine_text:
         out += "\n" + machine_text + "\n"
+    out = add_blueprints_writable_root(out)
 
     # Atomic write of the live file.
     os.makedirs(os.path.dirname(live), exist_ok=True)
