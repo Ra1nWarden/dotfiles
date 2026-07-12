@@ -17,6 +17,8 @@ vendor/**/*.py[cod]
 !hooks/*
 !rules/
 !rules/*.rules
+# Codex writes accepted command approvals here. Keep them machine-local.
+rules/default.rules
 !agents/
 !agents/*.toml
 !skills/

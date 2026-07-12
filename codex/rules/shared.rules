@@ -1,2 +1,3 @@
+# Deliberate approvals shared across machines.
 prefix_rule(pattern=["curl", "-L"], decision="allow")
 prefix_rule(pattern=["git"], decision="allow")
