@@ -1,0 +1,42 @@
+# Home machines using password authentication.
+Host truenas raspberrypi xps rog-ally alienware proxmox
+    PubkeyAuthentication no
+    PreferredAuthentications password,keyboard-interactive
+    PasswordAuthentication yes
+    KbdInteractiveAuthentication yes
+    IdentityAgent none
+
+Host truenas
+    HostName 192.168.1.220
+    User truenas_admin
+
+Host raspberrypi
+    HostName 192.168.1.222
+    User ra1nwarden
+
+Host xps
+    HostName 192.168.1.223
+    User ra1nwarden
+
+Host rog-ally
+    HostName 192.168.1.224
+    User alan-wang
+
+Host alienware
+    HostName 192.168.1.225
+    User ra1nwarden
+
+Host proxmox
+    HostName 192.168.1.226
+    User root
+
+# Service-account identity provided by the 1Password SSH agent.
+Host k3s-worker-01
+    HostName 192.168.2.2
+    User ubuntu
+    IdentityFile ~/.ssh/homelab-admin.pub
+    IdentitiesOnly yes
+
+# Use the 1Password SSH agent for hosts without an explicit override.
+Host *
+    IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"

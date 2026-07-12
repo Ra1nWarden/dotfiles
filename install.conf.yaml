@@ -9,6 +9,8 @@
     ~/.vimrc: .vimrc
     ~/.vim: vim
     ~/.tmux.conf: .tmux.conf
+    ~/.ssh/config: ssh/config
+    ~/.ssh/homelab-admin.pub: ssh/homelab-admin.pub
     ~/.claude/CLAUDE.md: claude/CLAUDE.md
     ~/.claude/settings.json: claude/settings.json
     ~/.claude/.mcp.json: claude/.mcp.json
