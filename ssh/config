@@ -1,5 +1,5 @@
 # Home machines using password authentication.
-Host truenas raspberrypi xps rog-ally alienware proxmox
+Host truenas raspberrypi xps rog-ally alienware proxmox router
     PubkeyAuthentication no
     PreferredAuthentications password,keyboard-interactive
     PasswordAuthentication yes
@@ -29,6 +29,9 @@ Host alienware
 Host proxmox
     HostName 192.168.1.226
     User root
+
+Host router
+    HostName 192.168.0.1
 
 # Service-account identity provided by the 1Password SSH agent.
 Host k3s-worker-01
