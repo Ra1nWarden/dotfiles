@@ -1,14 +1,18 @@
 # Home machines using password authentication.
-Host truenas raspberrypi xps rog-ally alienware proxmox
+Host raspberrypi xps rog-ally alienware
     PubkeyAuthentication no
     PreferredAuthentications password,keyboard-interactive
     PasswordAuthentication yes
     KbdInteractiveAuthentication yes
     IdentityAgent none
 
+# Key auth via the 1Password SSH agent, password as fallback.
 Host truenas
     HostName 192.168.1.220
     User truenas_admin
+    IdentityFile ~/.ssh/truenas.pub
+    IdentitiesOnly yes
+    PasswordAuthentication yes
 
 Host raspberrypi
     HostName 192.168.1.222
@@ -26,9 +30,13 @@ Host alienware
     HostName 192.168.1.225
     User ra1nwarden
 
+# Key auth via the 1Password SSH agent, password as fallback.
 Host proxmox
     HostName 192.168.1.226
     User root
+    IdentityFile ~/.ssh/proxmox.pub
+    IdentitiesOnly yes
+    PasswordAuthentication yes
 
 # OpenWrt Flint2: key auth via the 1Password SSH agent, password as fallback.
 Host router
