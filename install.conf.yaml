@@ -4,6 +4,9 @@
       relink: true
       force: true
 
+- shell:
+  - [git submodule update --init --recursive, Installing submodules]
+
 - link:
     ~/.zshrc: .zshrc
     ~/.vimrc: .vimrc
@@ -17,15 +20,14 @@
     ~/.claude/CLAUDE.md: claude/CLAUDE.md
     ~/.claude/settings.json: claude/settings.json
     ~/.claude/.mcp.json: claude/.mcp.json
-    ~/.claude/commands: claude/commands
     ~/.claude/agents: claude/agents
     ~/.claude/rules: claude/rules
+    ~/.claude/skills: agent-skills/skills
     ~/.codex/AGENTS.md: codex/AGENTS.md
     ~/.codex/rules: codex/rules
     ~/.codex/agents: codex/agents
-    ~/.agents/skills: codex/skills
+    ~/.agents/skills: agent-skills/skills
 
 - shell:
-  - [git submodule update --init --recursive, Installing vim plugins]
   - ['mkdir -p .git/hooks && ln -sf ../../codex/hooks/post-merge .git/hooks/post-merge && ln -sf ../../codex/hooks/post-checkout .git/hooks/post-checkout', Installing Codex git hooks]
   - [codex/bin/codex-sync, Syncing Codex portable config]
