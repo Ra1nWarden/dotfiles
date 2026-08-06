@@ -1,3 +1,10 @@
 #!/usr/bin/env bash
-# Re-apply portable Codex config after a merge/pull brings in new portable settings.
-exec "$(git rev-parse --show-toplevel)/codex/bin/codex-sync"
+# After a merge/pull: sync the agent-skills submodule to the recorded commit
+# (skipping if it has local changes), then re-apply portable Codex config.
+top="$(git rev-parse --show-toplevel)"
+if [ -n "$(git -C "$top/agent-skills" status --porcelain 2>/dev/null)" ]; then
+  echo "agent-skills submodule has local changes; skipping submodule sync" >&2
+else
+  git -C "$top" submodule update --init agent-skills
+fi
+exec "$top/codex/bin/codex-sync"
