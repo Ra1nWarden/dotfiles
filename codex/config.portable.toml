@@ -1,7 +1,7 @@
-model = "gpt-5.5"
+model = "gpt-5.6-sol"
 personality = "pragmatic"
-model_reasoning_effort = "high"
-service_tier = "priority"
+model_reasoning_effort = "xhigh"
+service_tier = "fast"
 approval_policy = "on-request"
 sandbox_mode = "workspace-write"
 web_search = "cached"
@@ -9,6 +9,7 @@ web_search = "cached"
 
 [features]
 child_agents_md = true
+fast_mode = true
 multi_agent = true
 memories = false
 chronicle = false
