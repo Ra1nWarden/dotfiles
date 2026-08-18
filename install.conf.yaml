@@ -15,6 +15,7 @@
     ~/.ssh/config: ssh/config
     ~/.ssh/homelab-admin.pub: ssh/homelab-admin.pub
     ~/.ssh/proxmox.pub: ssh/proxmox.pub
+    ~/.ssh/raspberrypi.pub: ssh/raspberrypi.pub
     ~/.ssh/truenas.pub: ssh/truenas.pub
     ~/.ssh/openwrt-router.pub: ssh/openwrt-router.pub
     ~/.claude/CLAUDE.md: claude/CLAUDE.md
