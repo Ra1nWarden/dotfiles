@@ -14,6 +14,13 @@ Host truenas
     IdentitiesOnly yes
     PasswordAuthentication yes
 
+Host homeassistant
+    HostName 192.168.1.221
+    User root
+    IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+    PreferredAuthentications publickey
+    PasswordAuthentication no
+
 Host raspberrypi
     HostName 192.168.1.222
     User ra1nwarden
