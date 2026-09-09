@@ -15,7 +15,8 @@
     "clangd-lsp@claude-plugins-official": true,
     "asana@claude-plugins-official": true,
     "slack@claude-plugins-official": true,
-    "notion@claude-plugins-official": true
+    "notion@claude-plugins-official": true,
+    "mattpocock-skills@mattpocock": true
   },
   "disableArtifact": true,
   "permissions": {
@@ -33,5 +34,13 @@
       "ScheduleWakeup",
       "AskUserQuestion"
     ]
+  },
+  "extraKnownMarketplaces": {
+    "mattpocock": {
+      "source": {
+        "source": "github",
+        "repo": "mattpocock/skills"
+      }
+    }
   }
 }
