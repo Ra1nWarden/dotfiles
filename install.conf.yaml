@@ -20,7 +20,6 @@
     ~/.ssh/openwrt-router.pub: ssh/openwrt-router.pub
     ~/.claude/CLAUDE.md: claude/CLAUDE.md
     ~/.claude/settings.json: claude/settings.json
-    ~/.claude/.mcp.json: claude/.mcp.json
     ~/.claude/agents: claude/agents
     ~/.claude/rules: claude/rules
     ~/.claude/skills: agent-skills/skills
@@ -32,3 +31,4 @@
 - shell:
   - ['mkdir -p .git/hooks && ln -sf ../../codex/hooks/post-merge .git/hooks/post-merge && ln -sf ../../codex/hooks/post-checkout .git/hooks/post-checkout', Installing Codex git hooks]
   - [codex/bin/codex-sync, Syncing Codex portable config]
+  - [claude/bin/claude-mcp-sync, Registering Claude Code MCP servers]

@@ -1,9 +1,8 @@
 {
   "mcpServers": {
-    "playwright": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["@anthropic-ai/playwright-mcp"]
+    "grafana": {
+      "type": "http",
+      "url": "http://grafana-mcp.tailab65b9.ts.net:8000/mcp"
     }
   }
 }

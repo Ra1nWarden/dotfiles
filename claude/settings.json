@@ -20,6 +20,9 @@
   },
   "disableArtifact": true,
   "permissions": {
+    "allow": [
+      "mcp__grafana"
+    ],
     "deny": [
       "NotebookEdit",
       "DesignSync",

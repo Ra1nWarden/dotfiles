@@ -1,0 +1,65 @@
+#!/usr/bin/env python3
+"""claude-mcp-sync: register the tracked Claude Code MCP servers at user scope.
+
+  - Tracked (hand-edited): <repo>/claude/.mcp.json
+  - Live (app-owned):      ~/.claude.json  (mcpServers, user scope)
+
+Claude Code only reads user-scope MCP servers from ~/.claude.json, which also
+holds machine-local app state, so it can't be symlinked. Instead each server in
+the tracked file is (re)written there via `claude mcp add-json --scope user`.
+
+Idempotent: a server whose live definition already matches is left alone.
+Servers removed from the tracked file are NOT removed from the live config;
+run `claude mcp remove --scope user <name>` for those. Skips cleanly when the
+claude CLI isn't installed.
+"""
+import json
+import os
+import shutil
+import subprocess
+import sys
+
+CLAUDE_DIR = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+TRACKED = os.path.join(CLAUDE_DIR, ".mcp.json")
+LIVE = os.path.join(os.path.expanduser("~"), ".claude.json")
+
+
+def live_servers():
+    try:
+        with open(LIVE, encoding="utf-8") as f:
+            return json.load(f).get("mcpServers", {})
+    except FileNotFoundError:
+        return {}
+
+
+def run(*args):
+    return subprocess.run(["claude", "mcp", *args], capture_output=True, text=True)
+
+
+def main():
+    if shutil.which("claude") is None:
+        print("claude-mcp-sync: claude CLI not found, skipping")
+        return 0
+
+    with open(TRACKED, encoding="utf-8") as f:
+        wanted = json.load(f).get("mcpServers", {})
+    live = live_servers()
+
+    failed = False
+    for name, spec in wanted.items():
+        if live.get(name) == spec:
+            print(f"claude-mcp-sync: {name} up to date")
+            continue
+        if name in live:
+            run("remove", "--scope", "user", name)
+        result = run("add-json", "--scope", "user", name, json.dumps(spec))
+        if result.returncode != 0:
+            failed = True
+            print(f"claude-mcp-sync: failed to add {name}: {result.stderr.strip()}", file=sys.stderr)
+        else:
+            print(f"claude-mcp-sync: {name} registered")
+    return 1 if failed else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

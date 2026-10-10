@@ -5,6 +5,8 @@
 !CLAUDE.md
 !keybindings.json
 !.mcp.json
+!bin/
+!bin/*
 !commands/
 !commands/*.md
 !agents/
