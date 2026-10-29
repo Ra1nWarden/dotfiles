@@ -4,21 +4,6 @@
     "BASH_DEFAULT_TIMEOUT_MS": "300000",
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
   },
-  "model": "claude-fable-5[1m]",
-  "enabledPlugins": {
-    "frontend-design@claude-plugins-official": true,
-    "playwright@claude-plugins-official": true,
-    "context7@claude-plugins-official": true,
-    "superpowers@claude-plugins-official": true,
-    "address-pr-comments@figma-internal": true,
-    "figma-plugin@figma-internal": true,
-    "clangd-lsp@claude-plugins-official": true,
-    "asana@claude-plugins-official": true,
-    "slack@claude-plugins-official": true,
-    "notion@claude-plugins-official": true,
-    "mattpocock-skills@mattpocock": true
-  },
-  "disableArtifact": true,
   "permissions": {
     "allow": [
       "mcp__grafana"
@@ -38,12 +23,31 @@
       "AskUserQuestion"
     ]
   },
+  "disableArtifact": true,
+  "enabledPlugins": {
+    "frontend-design@claude-plugins-official": true,
+    "playwright@claude-plugins-official": true,
+    "context7@claude-plugins-official": true,
+    "superpowers@claude-plugins-official": true,
+    "address-pr-comments@figma-internal": true,
+    "figma-plugin@figma-internal": true,
+    "clangd-lsp@claude-plugins-official": true,
+    "asana@claude-plugins-official": true,
+    "slack@claude-plugins-official": true,
+    "notion@claude-plugins-official": true,
+    "mattpocock-skills@mattpocock": true
+  },
   "extraKnownMarketplaces": {
     "mattpocock": {
       "source": {
         "source": "github",
         "repo": "mattpocock/skills"
       }
+    }
+  },
+  "modelSettings": {
+    "claude-opus-5-5": {
+      "effortLevel": "high"
     }
   }
 }
