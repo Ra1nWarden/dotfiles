@@ -64,7 +64,7 @@ Host k3s-worker-01
     IdentitiesOnly yes
 
 # R9700 AI VM (Proxmox VM 302); same service-account identity.
-Host ai-01
+Host ai-box
     HostName 192.168.2.6
     User ubuntu
     IdentityFile ~/.ssh/homelab-admin.pub
