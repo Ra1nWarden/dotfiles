@@ -63,6 +63,13 @@ Host k3s-worker-01
     IdentityFile ~/.ssh/homelab-admin.pub
     IdentitiesOnly yes
 
+# R9700 AI VM (Proxmox VM 302); same service-account identity.
+Host ai-01
+    HostName 192.168.2.6
+    User ubuntu
+    IdentityFile ~/.ssh/homelab-admin.pub
+    IdentitiesOnly yes
+
 # Use the 1Password SSH agent for hosts without an explicit override.
 Host *
     IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
